@@ -1026,8 +1026,8 @@ function buildQuiz() {
                             <span class="version-tag v2">Versão 2.0</span>
                             <div class="version-desc">"${item.v2}"</div>
                             <div class="rating-buttons">
-                                ${[0,1,2,3].map(v =>
-                                    `<button class="rating-btn${v===3?' rating-btn-priority':''}" onclick="setAnswer(this,'${c.id}','${cat.key}','v2',${v})">${v}</button>`
+                                ${[0,1,2].map(v =>
+                                    `<button class="rating-btn" onclick="setAnswer(this,'${c.id}','${cat.key}','v2',${v})">${v}</button>`
                                 ).join('')}
                             </div>
                         </div>
@@ -1151,11 +1151,12 @@ function showResults() {
 
 function skipToResults() {
     CHAKRAS.forEach((c, i) => {
-        const rv = () => { const r = Math.random(); return r < 0.15 ? 3 : Math.floor(r * 3); };
+        const rv1 = () => { const r = Math.random(); return r < 0.15 ? 3 : Math.floor(r * 3); };
+        const rv2 = () => Math.floor(Math.random() * 3);
         answers[c.id] = {
-            interno: { v1: rv(), v2: rv() },
-            acoes: { v1: rv(), v2: rv() },
-            resultados: { v1: rv(), v2: rv() }
+            interno: { v1: rv1(), v2: rv2() },
+            acoes: { v1: rv1(), v2: rv2() },
+            resultados: { v1: rv1(), v2: rv2() }
         };
     });
     showResults();
@@ -1273,8 +1274,7 @@ function renderPriorityReport() {
         const a = answers[c.id];
         const items = [];
         CATS.forEach(cat => {
-            if (a[cat.key].v1 === 3) items.push({ version:'1.0', vClass:'v1', cat: cat.label, text: c.items[cat.key].v1 });
-            if (a[cat.key].v2 === 3) items.push({ version:'2.0', vClass:'v2', cat: cat.label, text: c.items[cat.key].v2 });
+            if (a[cat.key].v1 === 3) items.push({ cat: cat.label, text: c.items[cat.key].v1 });
         });
         if (items.length > 0) priorities.push({ chakra: c, items });
     });
@@ -1301,7 +1301,7 @@ function renderPriorityReport() {
                 <span class="priority-count">${p.items.length} prioridade${p.items.length>1?'s':''}</span>
             </div>`;
         p.items.forEach(it => {
-            html += `<div class="priority-question"><span class="pq-tag ${it.vClass}">${it.version}</span>${it.cat}: ${it.text}</div>`;
+            html += `<div class="priority-question"><span class="pq-tag v1">1.0</span>${it.cat}: ${it.text}</div>`;
         });
         html += '</div>';
     });
