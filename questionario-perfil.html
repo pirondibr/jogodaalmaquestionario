@@ -415,6 +415,96 @@ body {
 .score-dim-v.v1 { color:#f87171; }
 .score-dim-v.v2 { color:#60a5fa; }
 
+/* Level badge */
+.level-badge {
+    display:inline-flex; align-items:center; gap:0.3rem;
+    padding:0.2rem 0.7rem; border-radius:100px;
+    font-size:0.7rem; font-weight:700; letter-spacing:0.06em;
+    text-transform:uppercase;
+}
+.level-badge.iniciante { background:rgba(239,68,68,0.12); color:#f87171; border:1px solid rgba(239,68,68,0.2); }
+.level-badge.experiente { background:rgba(212,168,67,0.12); color:var(--accent-gold); border:1px solid rgba(212,168,67,0.2); }
+.level-badge.mestre { background:rgba(46,204,113,0.12); color:#2ecc71; border:1px solid rgba(46,204,113,0.2); }
+.level-badge .level-icon { font-size:0.8rem; }
+
+.score-card-header-top {
+    display:flex; justify-content:space-between; align-items:center;
+    margin-bottom:0.3rem;
+}
+.net-score {
+    font-size:0.7rem; font-weight:600; color:var(--text-muted);
+}
+.net-score span { font-weight:700; }
+.net-score span.positive { color:#2ecc71; }
+.net-score span.negative { color:#f87171; }
+.net-score span.zero { color:var(--text-muted); }
+
+/* Overall level card */
+.overall-level-card {
+    background:var(--bg-card); border:1px solid var(--border-subtle);
+    border-radius:20px; padding:2rem; margin-bottom:2rem;
+    text-align:center; position:relative; overflow:hidden;
+}
+.overall-level-card::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:4px;
+}
+.overall-level-card.iniciante::before { background:linear-gradient(90deg, #ef4444, #f87171); }
+.overall-level-card.experiente::before { background:linear-gradient(90deg, #d4a843, #f1c40f); }
+.overall-level-card.mestre::before { background:linear-gradient(90deg, #2ecc71, #27ae60); }
+.overall-level-title {
+    font-size:0.7rem; font-weight:600; text-transform:uppercase;
+    letter-spacing:0.15em; color:var(--text-muted); margin-bottom:0.5rem;
+}
+.overall-level-name {
+    font-family:var(--font-heading); font-size:2.5rem; font-weight:700;
+    line-height:1.1; margin-bottom:0.3rem;
+}
+.overall-level-name.iniciante { color:#f87171; }
+.overall-level-name.experiente { color:var(--accent-gold); }
+.overall-level-name.mestre { color:#2ecc71; }
+.overall-level-icon {
+    font-size:2rem; margin-bottom:0.5rem;
+}
+.overall-net-score {
+    font-size:0.9rem; color:var(--text-secondary); margin-bottom:1rem;
+}
+.overall-net-score span { font-weight:700; font-size:1.1rem; }
+.overall-net-score span.positive { color:#2ecc71; }
+.overall-net-score span.negative { color:#f87171; }
+.overall-net-score span.zero { color:var(--text-muted); }
+.overall-level-bar {
+    max-width:400px; margin:0 auto; position:relative;
+    height:12px; background:rgba(255,255,255,0.06); border-radius:6px;
+    overflow:hidden;
+}
+.overall-level-fill {
+    height:100%; border-radius:6px; transition:width 0.6s ease;
+}
+.overall-level-fill.iniciante { background:linear-gradient(90deg, #ef4444, #f87171); }
+.overall-level-fill.experiente { background:linear-gradient(90deg, #d4a843, #f1c40f); }
+.overall-level-fill.mestre { background:linear-gradient(90deg, #2ecc71, #27ae60); }
+.overall-level-ticks {
+    display:flex; justify-content:space-between; max-width:400px; margin:0.3rem auto 0;
+    font-size:0.6rem; color:var(--text-muted);
+}
+.overall-chakra-levels {
+    display:flex; justify-content:center; gap:0.5rem; flex-wrap:wrap; margin-top:1.2rem;
+}
+.overall-chakra-chip {
+    display:flex; align-items:center; gap:0.3rem;
+    padding:0.25rem 0.6rem; border-radius:8px;
+    background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle);
+    font-size:0.7rem;
+}
+.overall-chakra-chip .chip-dot {
+    width:8px; height:8px; border-radius:50%;
+}
+.overall-chakra-chip .chip-name { color:var(--text-secondary); font-weight:500; }
+.overall-chakra-chip .chip-level { font-weight:700; font-size:0.65rem; text-transform:uppercase; }
+.overall-chakra-chip .chip-level.iniciante { color:#f87171; }
+.overall-chakra-chip .chip-level.experiente { color:var(--accent-gold); }
+.overall-chakra-chip .chip-level.mestre { color:#2ecc71; }
+
 /* Profile detail cards */
 .profile-detail {
     background:var(--bg-card); border:1px solid var(--border-subtle);
@@ -864,6 +954,7 @@ body {
             <p>Veja o quanto você se identifica com cada versão em cada chakra.</p>
         </div>
 
+        <div id="overallLevel"></div>
         <div id="profileOverviewV2"></div>
         <div id="profileOverview"></div>
 
@@ -1268,44 +1359,94 @@ function skipToResults() {
 
 function cap(v) { return Math.min(v, 2); }
 
+const LEVELS = [
+    { id:'iniciante',  name:'Iniciante',  icon:'🔴', min:-6, max:0 },
+    { id:'experiente', name:'Experiente', icon:'🟡', min:1,  max:3 },
+    { id:'mestre',     name:'Mestre',     icon:'🟢', min:4,  max:6 }
+];
+
+function getLevel(netScore) {
+    if (netScore >= 4) return LEVELS[2];
+    if (netScore >= 1) return LEVELS[1];
+    return LEVELS[0];
+}
+
 function getScoresArray() {
     return CHAKRAS.map(c => {
         const a = answers[c.id];
+        const tV1 = cap(a.interno.v1) + cap(a.acoes.v1) + cap(a.resultados.v1);
+        const tV2 = cap(a.interno.v2) + cap(a.acoes.v2) + cap(a.resultados.v2);
         return {
             name: c.name,
             color: c.color,
             interno: { v1: cap(a.interno.v1), v2: cap(a.interno.v2) },
             acoes: { v1: cap(a.acoes.v1), v2: cap(a.acoes.v2) },
             resultados: { v1: cap(a.resultados.v1), v2: cap(a.resultados.v2) },
-            totalV1: cap(a.interno.v1) + cap(a.acoes.v1) + cap(a.resultados.v1),
-            totalV2: cap(a.interno.v2) + cap(a.acoes.v2) + cap(a.resultados.v2)
+            totalV1: tV1,
+            totalV2: tV2,
+            netScore: tV2 - tV1
         };
     });
 }
 
 function pct(val, max) { return max > 0 ? Math.round((val / max) * 100) : 0; }
 
+function netClass(n) { return n > 0 ? 'positive' : n < 0 ? 'negative' : 'zero'; }
+function netSign(n) { return n > 0 ? '+' + n : '' + n; }
+
 function renderResults() {
+    const overallEl = document.getElementById('overallLevel');
     const overviewV2 = document.getElementById('profileOverviewV2');
     const overview = document.getElementById('profileOverview');
     const details = document.getElementById('profileDetails');
+    overallEl.innerHTML = '';
     overviewV2.innerHTML = '';
     overview.innerHTML = '';
     details.innerHTML = '';
 
     const scores = getScoresArray();
 
-    // === V2 Overview: separate bars + score central + dimension breakdown ===
+    // === Overall Level ===
+    const totalNet = scores.reduce((s, c) => s + c.netScore, 0);
+    const overallLevel = getLevel(Math.round(totalNet / 7));
+    const overallBarPct = pct(totalNet + 42, 84);
+
+    let overallHtml = `
+        <div class="overall-level-card ${overallLevel.id}">
+            <div class="overall-level-title">Nível Geral</div>
+            <div class="overall-level-icon">${overallLevel.icon}</div>
+            <div class="overall-level-name ${overallLevel.id}">${overallLevel.name}</div>
+            <div class="overall-net-score">Score: <span class="${netClass(totalNet)}">${netSign(totalNet)}</span> <span style="color:var(--text-muted);font-size:0.75rem">(de -42 a +42)</span></div>
+            <div class="overall-level-bar"><div class="overall-level-fill ${overallLevel.id}" style="width:${overallBarPct}%"></div></div>
+            <div class="overall-level-ticks"><span>-42</span><span>0</span><span>+42</span></div>
+            <div class="overall-chakra-levels">`;
+    scores.forEach(s => {
+        const lv = getLevel(s.netScore);
+        overallHtml += `<div class="overall-chakra-chip">
+            <div class="chip-dot" style="background:${s.color}"></div>
+            <span class="chip-name">${s.name}</span>
+            <span class="chip-level ${lv.id}">${lv.name}</span>
+        </div>`;
+    });
+    overallHtml += '</div></div>';
+    overallEl.innerHTML = overallHtml;
+
+    // === V2 Overview: separate bars + level badge + dimension breakdown ===
     let v2Html = '<div class="profile-v2-grid">';
     scores.forEach(s => {
         const v1P = pct(s.totalV1, 6);
         const v2P = pct(s.totalV2, 6);
+        const lv = getLevel(s.netScore);
         v2Html += `
             <div class="score-card" style="--chakra-color:${s.color}">
+                <div class="score-card-header-top">
+                    <span class="level-badge ${lv.id}"><span class="level-icon">${lv.icon}</span> ${lv.name}</span>
+                    <span class="net-score">Net: <span class="${netClass(s.netScore)}">${netSign(s.netScore)}</span></span>
+                </div>
                 <div class="score-card-header">
                     <div class="score-card-name">${s.name}</div>
                     <div class="score-card-central">
-                        <div class="label">Score Central</div>
+                        <div class="label">Score</div>
                         <div class="value"><span style="color:#f87171">${s.totalV1}</span><span style="color:var(--text-muted);font-size:0.9rem"> / </span><span style="color:#60a5fa">${s.totalV2}</span></div>
                     </div>
                 </div>
@@ -1866,6 +2007,7 @@ async function exportPDF() {
         const usableW = pageW - margin * 2;
 
         const sections = [
+            document.getElementById('overallLevel'),
             document.getElementById('profileOverviewV2'),
             document.getElementById('profileOverview'),
             ...document.querySelectorAll('.chart-card'),
