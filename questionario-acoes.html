@@ -1,0 +1,2036 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnóstico das Ações — Jogo da Alma</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+    --bg-primary: #07060e;
+    --bg-secondary: #0d0b18;
+    --bg-card: #13112a;
+    --bg-card-hover: #1a1740;
+    --text-primary: #f0eef6;
+    --text-secondary: #a8a3c0;
+    --text-muted: #6b6590;
+    --accent-gold: #d4a843;
+    --accent-purple: #8b5cf6;
+    --border-subtle: rgba(139, 92, 246, 0.12);
+    --border-light: rgba(255, 255, 255, 0.06);
+    --font-heading: 'Cormorant Garamond', Georgia, serif;
+    --font-body: 'Inter', -apple-system, sans-serif;
+    --color-basico: #e74c3c;
+    --color-sacral: #e67e22;
+    --color-plexo: #f1c40f;
+    --color-cardiaco: #2ecc71;
+    --color-laringeo: #3498db;
+    --color-frontal: #6c5ce7;
+    --color-coronario: #a855f7;
+}
+
+html { scroll-behavior: smooth; font-size: 17px; }
+
+body {
+    font-family: var(--font-body);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.7;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+
+.container { max-width: 900px; margin: 0 auto; padding: 0 1.5rem; }
+
+/* ===== NAV ===== */
+.top-bar {
+    position: fixed; top:0; left:0; right:0; z-index:1000;
+    padding: 0.8rem 0;
+    background: rgba(7,6,14,0.92);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border-subtle);
+}
+.top-bar .container {
+    display:flex; align-items:center; justify-content:space-between; max-width:900px;
+}
+.top-bar-logo {
+    font-family: var(--font-heading); font-size:1.4rem; font-weight:700;
+    color: var(--text-primary); text-decoration:none; display:flex; align-items:center; gap:0.4rem;
+}
+.top-bar-logo .icon { color: var(--accent-gold); font-size:1rem; }
+.top-bar-back {
+    color: var(--text-secondary); text-decoration:none; font-size:0.9rem;
+    display:flex; align-items:center; gap:0.3rem; transition: color 0.3s;
+}
+.top-bar-back:hover { color: var(--accent-gold); }
+
+/* ===== SCREENS ===== */
+.screen { display:none; min-height:100vh; padding-top: 4.5rem; }
+.screen.active { display:block; }
+
+/* ===== LANDING ===== */
+.landing-hero {
+    text-align:center; padding: 5rem 0 3rem;
+    background: radial-gradient(ellipse at 50% 30%, rgba(139,92,246,0.08) 0%, transparent 60%);
+}
+.landing-hero .tag {
+    display:inline-block; font-size:0.8rem; font-weight:600;
+    letter-spacing:0.2em; text-transform:uppercase; color:var(--accent-gold);
+    margin-bottom:1.2rem; padding:0.35rem 1rem;
+    border:1px solid rgba(212,168,67,0.25); border-radius:100px;
+}
+.landing-hero h1 {
+    font-family:var(--font-heading); font-size:clamp(2.5rem,6vw,4rem);
+    font-weight:700; line-height:1.1; margin-bottom:1.2rem;
+    background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-gold) 50%, var(--accent-purple) 100%);
+    background-size:200% 200%; -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    background-clip:text; animation: shimmer 6s ease-in-out infinite;
+}
+@keyframes shimmer { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
+.landing-hero p { color:var(--text-secondary); font-size:1.15rem; max-width:600px; margin:0 auto 2rem; line-height:1.8; }
+.btn-start {
+    display:inline-flex; align-items:center; gap:0.5rem;
+    padding:1rem 2.5rem; background:var(--accent-gold); color:var(--bg-primary);
+    border:none; border-radius:100px; font-size:1.1rem; font-weight:600;
+    cursor:pointer; transition:all 0.3s; font-family:var(--font-body);
+}
+.btn-start:hover { transform:translateY(-2px); box-shadow:0 0 30px rgba(212,168,67,0.3); }
+.btn-skip {
+    display:inline-flex; align-items:center; gap:0.5rem;
+    padding:0.7rem 1.8rem; background:transparent;
+    border:1px solid var(--accent-purple); color:var(--accent-purple);
+    border-radius:100px; font-size:0.9rem; font-weight:500;
+    cursor:pointer; transition:all 0.3s; font-family:var(--font-body); opacity:0.7;
+}
+.btn-skip:hover { opacity:1; background:rgba(139,92,246,0.1); }
+
+/* Chakra overview grid */
+.chakra-overview { padding: 0 0 5rem; }
+.chakra-overview h2 {
+    font-family:var(--font-heading); font-size:2rem; text-align:center;
+    margin-bottom:0.5rem; font-weight:700;
+}
+.chakra-overview .subtitle {
+    text-align:center; color:var(--text-secondary); font-size:1rem;
+    margin-bottom:2.5rem; max-width:550px; margin-left:auto; margin-right:auto;
+}
+.overview-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(250px,1fr)); gap:1.2rem; }
+.overview-card {
+    background:var(--bg-card); border:1px solid var(--border-subtle);
+    border-radius:14px; padding:1.5rem; position:relative; overflow:hidden;
+    transition: all 0.3s;
+}
+.overview-card::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:3px;
+    background:var(--chakra-color); opacity:0.7;
+}
+.overview-card:hover { transform:translateY(-3px); border-color: color-mix(in srgb, var(--chakra-color) 30%, transparent); }
+.overview-card h3 { font-family:var(--font-heading); font-size:1.4rem; font-weight:700; margin-bottom:0.2rem; }
+.overview-card .theme { color:var(--chakra-color); font-size:0.85rem; font-weight:600; text-transform:uppercase; letter-spacing:0.12em; margin-bottom:0.6rem; }
+.overview-card .question { color:var(--text-secondary); font-size:0.95rem; font-style:italic; font-family:var(--font-heading); margin-bottom:0.8rem; }
+.overview-card .states { display:flex; gap:0.5rem; flex-wrap:wrap; }
+.state-tag {
+    font-size:0.78rem; padding:0.25rem 0.7rem; border-radius:100px; font-weight:500;
+}
+
+/* Insight section */
+.insight-section { padding:0 0 4rem; }
+.insight-section h2 { font-family:var(--font-heading); font-size:1.8rem; text-align:center; margin-bottom:2rem; }
+.insight-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.2rem; }
+.insight-card {
+    background:var(--bg-card); border:1px solid var(--border-subtle);
+    border-radius:14px; padding:1.5rem; text-align:center;
+}
+.insight-card.highlighted {
+    border-color: rgba(230,126,34,0.4);
+    background: linear-gradient(135deg, var(--bg-card) 0%, rgba(230,126,34,0.06) 100%);
+}
+.insight-card .emoji { font-size:1.5rem; margin-bottom:0.5rem; }
+.insight-card h4 { font-family:var(--font-heading); font-size:1.2rem; color:var(--chakra-color); margin-bottom:0.5rem; }
+.insight-card blockquote {
+    color:var(--text-secondary); font-family:var(--font-heading); font-size:1rem;
+    font-style:italic; line-height:1.6;
+}
+
+/* How it works */
+.how-section { padding:0 0 5rem; }
+.how-section h2 { font-family:var(--font-heading); font-size:1.8rem; text-align:center; margin-bottom:0.5rem; }
+.how-section .subtitle { text-align:center; color:var(--text-secondary); margin-bottom:2rem; }
+.how-steps { display:grid; grid-template-columns:repeat(3,1fr); gap:1.2rem; }
+.how-step {
+    background:var(--bg-card); border:1px solid var(--border-subtle);
+    border-radius:14px; padding:1.5rem; text-align:center;
+}
+.how-step .num {
+    font-family:var(--font-heading); font-size:2.5rem; font-weight:700;
+    color:var(--accent-gold); opacity:0.3; line-height:1; margin-bottom:0.3rem;
+}
+.how-step h4 { font-family:var(--font-heading); font-size:1.2rem; margin-bottom:0.5rem; }
+.how-step p { color:var(--text-secondary); font-size:0.9rem; }
+
+/* ===== QUIZ ===== */
+.quiz-screen { padding-top:4.5rem; }
+
+.quiz-progress {
+    position:sticky; top:3.5rem; z-index:50;
+    background:rgba(7,6,14,0.95); backdrop-filter:blur(15px);
+    padding:0.8rem 0; border-bottom:1px solid var(--border-subtle);
+}
+.progress-dots { display:flex; justify-content:center; gap:0.5rem; align-items:center; margin-bottom:0.5rem; }
+.progress-dot {
+    width:12px; height:12px; border-radius:50%; border:2px solid var(--text-muted);
+    background:transparent; transition:all 0.3s; cursor:pointer;
+}
+.progress-dot.done { border-color:var(--accent-gold); background:var(--accent-gold); }
+.progress-dot.current { border-color:var(--dot-color); background:var(--dot-color); transform:scale(1.3); box-shadow:0 0 12px color-mix(in srgb, var(--dot-color) 50%, transparent); }
+.progress-text { text-align:center; font-size:0.8rem; color:var(--text-muted); }
+.progress-bar-track {
+    height:3px; background:rgba(255,255,255,0.06); border-radius:3px;
+    margin-top:0.5rem; overflow:hidden;
+}
+.progress-bar-fill { height:100%; background:var(--accent-gold); border-radius:3px; transition:width 0.4s ease; }
+
+/* Chakra quiz page */
+.chakra-page { display:none; padding:2rem 0 4rem; }
+.chakra-page.active { display:block; }
+
+.chakra-page-header {
+    text-align:center; margin-bottom:2.5rem;
+    padding:2rem; border-radius:16px;
+    background: var(--bg-card);
+    border:1px solid var(--border-subtle);
+    position:relative; overflow:hidden;
+}
+.chakra-page-header::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:4px;
+    background: var(--chakra-color);
+}
+.chakra-page-header h2 {
+    font-family:var(--font-heading); font-size:2rem; font-weight:700; margin-bottom:0.3rem;
+}
+.chakra-page-header .theme-label {
+    color:var(--chakra-color); font-size:0.9rem; font-weight:600;
+    text-transform:uppercase; letter-spacing:0.15em; margin-bottom:0.5rem;
+}
+.chakra-page-header .desc { color:var(--text-secondary); font-size:1rem; }
+
+.scale-legend {
+    display:flex; justify-content:center; gap:0.6rem; flex-wrap:wrap;
+    margin-bottom:2rem; padding:0.7rem 1rem; border-radius:10px;
+    background:rgba(255,255,255,0.02); border:1px solid var(--border-subtle);
+}
+.scale-legend-item {
+    display:flex; align-items:center; gap:0.3rem; font-size:0.75rem; color:var(--text-muted);
+}
+.scale-legend-num {
+    width:20px; height:20px; border-radius:5px; display:flex; align-items:center; justify-content:center;
+    font-weight:700; font-size:0.7rem; border:1px solid var(--border-subtle);
+}
+.scale-legend-item:nth-child(1) .scale-legend-num { color:var(--text-muted); }
+.scale-legend-item:nth-child(2) .scale-legend-num { color:#f1c40f; border-color:rgba(241,196,15,0.3); }
+.scale-legend-item:nth-child(3) .scale-legend-num { color:#e67e22; border-color:rgba(230,126,34,0.3); }
+.scale-legend-item:nth-child(4) .scale-legend-num { color:#ef4444; border-color:rgba(239,68,68,0.3); }
+
+.question-group { margin-bottom:2.5rem; }
+.question-group-header {
+    display:flex; align-items:center; gap:0.8rem;
+    margin-bottom:1.2rem; padding-bottom:0.8rem;
+    border-bottom:1px solid var(--border-subtle);
+}
+.group-indicator {
+    width:8px; height:8px; border-radius:50%; flex-shrink:0;
+}
+.group-indicator.fazer { background:#e67e22; }
+.question-group-header h3 {
+    font-family:var(--font-heading); font-size:1.3rem; font-weight:600;
+}
+.question-group-header .group-tag {
+    font-size:0.75rem; padding:0.2rem 0.6rem; border-radius:100px; font-weight:500;
+    margin-left:auto;
+}
+.group-tag.fazer { background:rgba(230,126,34,0.12); color:#e67e22; border:1px solid rgba(230,126,34,0.2); }
+
+.question-item {
+    background:var(--bg-card); border:1px solid var(--border-subtle);
+    border-radius:12px; padding:1rem 1.2rem; margin-bottom:0.6rem;
+    display:flex; align-items:center; gap:1rem;
+    transition: border-color 0.3s;
+}
+.question-item:hover { border-color: rgba(139,92,246,0.25); }
+.question-text { flex:1; font-size:0.95rem; color:var(--text-secondary); line-height:1.5; }
+.rating-buttons { display:flex; gap:0.4rem; flex-shrink:0; }
+.rating-btn {
+    width:40px; height:36px; border-radius:8px;
+    border:1px solid var(--border-subtle); background:transparent;
+    color:var(--text-muted); font-size:0.9rem; font-weight:600;
+    cursor:pointer; transition:all 0.2s; font-family:var(--font-body);
+}
+.rating-btn:hover { border-color:var(--accent-purple); color:var(--text-primary); }
+.rating-btn.selected { border-color:var(--accent-gold); background:rgba(212,168,67,0.15); color:var(--accent-gold); }
+.rating-btn-priority { border-color:rgba(239,68,68,0.3) !important; color:rgba(239,68,68,0.6) !important; font-size:0.85rem !important; }
+.rating-btn-priority:hover { border-color:#ef4444 !important; color:#ef4444 !important; }
+.rating-btn-priority.selected { border-color:#ef4444 !important; background:rgba(239,68,68,0.15) !important; color:#ef4444 !important; }
+
+.quiz-nav {
+    display:flex; justify-content:space-between; align-items:center;
+    padding:1.5rem 0; border-top:1px solid var(--border-subtle); margin-top:1rem;
+}
+.btn-nav {
+    padding:0.8rem 2rem; border-radius:100px; font-size:0.95rem;
+    font-weight:500; cursor:pointer; transition:all 0.3s; font-family:var(--font-body);
+    display:flex; align-items:center; gap:0.4rem;
+}
+.btn-prev {
+    background:transparent; border:1px solid var(--border-subtle); color:var(--text-secondary);
+}
+.btn-prev:hover { border-color:var(--text-primary); color:var(--text-primary); }
+.btn-next {
+    background:var(--accent-gold); border:none; color:var(--bg-primary); font-weight:600;
+}
+.btn-next:hover { transform:translateY(-2px); box-shadow:0 0 25px rgba(212,168,67,0.3); }
+.btn-next:disabled { opacity:0.4; cursor:not-allowed; transform:none; box-shadow:none; }
+
+/* ===== RESULTS ===== */
+.results-screen { padding-top:4.5rem; }
+
+.results-header {
+    text-align:center; padding:4rem 0 2rem;
+}
+.results-header h1 {
+    font-family:var(--font-heading); font-size:clamp(2rem,5vw,3rem);
+    font-weight:700; margin-bottom:0.5rem;
+}
+.results-header p { color:var(--text-secondary); font-size:1.1rem; }
+
+.results-overview {
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(110px,1fr));
+    gap:0.8rem; margin-bottom:3rem;
+}
+.result-mini {
+    background:var(--bg-card); border:1px solid var(--border-subtle);
+    border-radius:12px; padding:1rem; text-align:center; position:relative; overflow:hidden;
+}
+.result-mini::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:3px;
+    background:var(--chakra-color);
+}
+.result-mini .name { font-size:0.75rem; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); margin-bottom:0.3rem; }
+.result-mini .score-pct { font-family:var(--font-heading); font-size:1.4rem; font-weight:700; margin-bottom:0.2rem; }
+.result-mini .status-label {
+    font-size:0.7rem; font-weight:600; padding:0.15rem 0.5rem;
+    border-radius:100px; display:inline-block;
+}
+.status-equilibrado { background:rgba(46,204,113,0.15); color:#2ecc71; }
+.status-bloqueado { background:rgba(59,130,246,0.15); color:#60a5fa; }
+.status-excessivo { background:rgba(239,68,68,0.15); color:#f87171; }
+.status-misto { background:rgba(168,163,192,0.15); color:var(--text-secondary); }
+
+.result-detail {
+    background:var(--bg-card); border:1px solid var(--border-subtle);
+    border-radius:16px; padding:2rem; margin-bottom:1.5rem;
+    position:relative; overflow:hidden;
+}
+.result-detail::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:4px;
+    background:var(--chakra-color);
+}
+.result-detail-header {
+    display:flex; align-items:center; justify-content:space-between;
+    margin-bottom:1.5rem; flex-wrap:wrap; gap:0.5rem;
+}
+.result-detail-header h3 { font-family:var(--font-heading); font-size:1.6rem; font-weight:700; }
+.result-detail-header .theme-tag {
+    color:var(--chakra-color); font-size:0.8rem; font-weight:600;
+    text-transform:uppercase; letter-spacing:0.12em;
+}
+.score-bars { margin-bottom:1.2rem; }
+.score-row { margin-bottom:0.8rem; }
+.score-label {
+    display:flex; justify-content:space-between; align-items:center;
+    font-size:0.85rem; margin-bottom:0.3rem;
+}
+.score-label .label-text { font-weight:500; }
+.score-label .label-text.fazer-label { color:#e67e22; }
+.score-label .score-value { color:var(--text-muted); font-weight:600; }
+.score-track {
+    height:8px; background:rgba(255,255,255,0.06); border-radius:4px; overflow:hidden;
+}
+.score-fill {
+    height:100%; border-radius:4px; transition:width 1s ease;
+}
+.score-fill.fazer-fill { background:linear-gradient(90deg, #e67e22, #d35400); }
+
+.result-interpretation {
+    background:rgba(255,255,255,0.02); border-radius:10px;
+    padding:1.2rem; border-left:3px solid var(--chakra-color);
+}
+.result-interpretation h4 {
+    font-family:var(--font-heading); font-size:1.1rem; margin-bottom:0.5rem;
+    color:var(--text-primary);
+}
+.result-interpretation p { color:var(--text-secondary); font-size:0.9rem; line-height:1.7; }
+.result-interpretation .phrase {
+    font-family:var(--font-heading); font-style:italic; color:var(--accent-gold);
+    font-size:1rem; margin-top:0.8rem; display:block;
+}
+
+.priority-report {
+    margin-top:3rem; margin-bottom:2rem;
+}
+.priority-report-title {
+    font-family:var(--font-heading); font-size:1.5rem; font-weight:700;
+    color:#ef4444; margin-bottom:0.3rem;
+}
+.priority-report-subtitle {
+    color:var(--text-secondary); font-size:0.95rem; margin-bottom:1.8rem;
+}
+.priority-chakra-block {
+    background:var(--bg-card); border:1px solid var(--border-subtle);
+    border-radius:16px; padding:1.5rem; margin-bottom:1rem;
+    border-left:4px solid var(--chakra-block-color, #ef4444);
+}
+.priority-chakra-header {
+    display:flex; justify-content:space-between; align-items:center;
+    margin-bottom:1rem;
+}
+.priority-chakra-name {
+    font-family:var(--font-heading); font-size:1.2rem; font-weight:700;
+}
+.priority-count {
+    font-size:0.8rem; font-weight:600; padding:0.2rem 0.7rem;
+    border-radius:100px; background:rgba(239,68,68,0.12); color:#ef4444;
+}
+.priority-question {
+    padding:0.5rem 0.8rem; margin-bottom:0.3rem;
+    background:rgba(255,255,255,0.02); border-radius:8px;
+    font-size:0.9rem; color:var(--text-secondary);
+    border-left:3px solid rgba(239,68,68,0.3);
+}
+.priority-empty {
+    text-align:center; padding:2rem; color:var(--text-muted);
+    font-size:0.95rem; background:var(--bg-card); border-radius:16px;
+    border:1px dashed var(--border-subtle);
+}
+
+/* ===== ANSWERS BREAKDOWN ===== */
+.answers-breakdown { margin-top:3rem; margin-bottom:2rem; }
+.answers-breakdown-title {
+    font-family:var(--font-heading); font-size:1.5rem; font-weight:700;
+    color:var(--text-primary); margin-bottom:0.3rem;
+}
+.answers-breakdown-subtitle {
+    color:var(--text-secondary); font-size:0.95rem; margin-bottom:1.8rem;
+}
+.ab-chakra-block {
+    background:var(--bg-card); border:1px solid var(--border-subtle);
+    border-radius:16px; overflow:hidden; margin-bottom:1.2rem;
+}
+.ab-chakra-header {
+    padding:0.8rem 1.2rem; display:flex; justify-content:space-between; align-items:center;
+}
+.ab-chakra-name {
+    font-family:var(--font-heading); font-size:1.1rem; font-weight:700; color:#fff;
+}
+.ab-chakra-scores {
+    font-size:0.8rem; font-weight:500; color:rgba(255,255,255,0.8);
+}
+.ab-row {
+    display:flex; justify-content:space-between; align-items:flex-start;
+    padding:0.45rem 1.2rem; font-size:0.85rem; gap:1rem;
+    border-top:1px solid rgba(255,255,255,0.03);
+}
+.ab-row:nth-child(even) { background:rgba(255,255,255,0.015); }
+.ab-question { flex:1; color:var(--text-secondary); line-height:1.4; }
+.ab-question .ab-num { color:var(--text-muted); margin-right:0.3rem; font-size:0.75rem; }
+.ab-answer {
+    flex-shrink:0; font-weight:600; font-size:0.8rem;
+    padding:0.15rem 0.6rem; border-radius:6px; white-space:nowrap;
+    text-align:center; min-width:90px;
+}
+.ab-answer[data-val="0"] { color:var(--text-muted); background:rgba(255,255,255,0.03); }
+.ab-answer[data-val="1"] { color:#f1c40f; background:rgba(241,196,15,0.08); }
+.ab-answer[data-val="2"] { color:#e67e22; background:rgba(230,126,34,0.1); }
+.ab-answer[data-val="3"] { color:#ef4444; background:rgba(239,68,68,0.12); font-weight:700; }
+
+@media(max-width:600px) {
+    .ab-row { flex-direction:column; gap:0.3rem; }
+    .ab-answer { align-self:flex-end; }
+}
+
+/* ===== EXPLANATION SCREEN ===== */
+.explain-hero {
+    padding:5rem 0 3rem; text-align:center;
+}
+.explain-hero h1 {
+    font-family:var(--font-heading); font-size:2.2rem; font-weight:700;
+    margin-bottom:0.5rem; color:var(--text-primary);
+}
+.explain-hero > p {
+    color:var(--text-secondary); font-size:1.05rem; max-width:600px; margin:0 auto;
+}
+.scale-cards {
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:1rem; max-width:900px; margin:2.5rem auto 0;
+}
+.scale-card {
+    background:var(--bg-card); border:1px solid var(--border-subtle);
+    border-radius:16px; padding:1.5rem; text-align:left;
+    transition:all 0.3s;
+}
+.scale-card:hover { border-color: rgba(255,255,255,0.1); }
+.scale-number {
+    font-family:var(--font-heading); font-size:2.5rem; font-weight:700;
+    line-height:1; margin-bottom:0.5rem;
+}
+.scale-card:nth-child(1) .scale-number { color:var(--text-muted); }
+.scale-card:nth-child(2) .scale-number { color:#f1c40f; }
+.scale-card:nth-child(3) .scale-number { color:#e67e22; }
+.scale-card:nth-child(4) .scale-number { color:#ef4444; }
+.scale-card:nth-child(4) { border-color:rgba(239,68,68,0.25); }
+.scale-label {
+    font-size:1rem; font-weight:600; color:var(--text-primary); margin-bottom:0.4rem;
+}
+.scale-desc {
+    font-size:0.85rem; color:var(--text-secondary); line-height:1.5;
+}
+.explain-note {
+    max-width:700px; margin:2rem auto 0; text-align:center;
+    padding:1.5rem; background:rgba(239,68,68,0.05); border:1px solid rgba(239,68,68,0.15);
+    border-radius:12px;
+}
+.explain-note p {
+    font-size:0.9rem; color:var(--text-secondary); line-height:1.6;
+}
+.explain-note strong { color:#ef4444; }
+.explain-cta {
+    text-align:center; margin-top:2.5rem; padding-bottom:3rem;
+}
+
+.results-footer {
+    text-align:center; padding:2rem 0 5rem;
+}
+.btn-export {
+    display:inline-flex; align-items:center; gap:0.5rem;
+    padding:0.9rem 2.2rem; background:var(--accent-purple);
+    border:1px solid var(--accent-purple); color:#fff;
+    border-radius:100px; font-size:1rem; font-weight:500;
+    cursor:pointer; transition:all 0.3s; font-family:var(--font-body);
+    margin-right:1rem;
+}
+.btn-export:hover { background:transparent; color:var(--accent-purple); }
+.btn-export:disabled { opacity:0.5; cursor:wait; }
+.btn-restart {
+    display:inline-flex; align-items:center; gap:0.5rem;
+    padding:0.9rem 2.2rem; background:transparent;
+    border:1px solid var(--accent-gold); color:var(--accent-gold);
+    border-radius:100px; font-size:1rem; font-weight:500;
+    cursor:pointer; transition:all 0.3s; font-family:var(--font-body);
+}
+.btn-restart:hover { background:var(--accent-gold); color:var(--bg-primary); }
+.pdf-overlay {
+    position:fixed; top:0; left:0; right:0; bottom:0; z-index:9999;
+    background:rgba(10,10,15,0.85); display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:1rem;
+}
+.pdf-overlay .spinner {
+    width:48px; height:48px; border:4px solid rgba(255,255,255,0.1);
+    border-top-color:var(--accent-purple); border-radius:50%;
+    animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform:rotate(360deg); } }
+.pdf-overlay p { color:var(--text-secondary); font-size:1rem; }
+
+/* ===== CHARTS ===== */
+.charts-section { margin-bottom:3rem; }
+.charts-section h2 {
+    font-family:var(--font-heading); font-size:1.8rem; font-weight:700;
+    text-align:center; margin-bottom:0.5rem;
+}
+.charts-section .charts-subtitle {
+    text-align:center; color:var(--text-secondary); font-size:0.95rem; margin-bottom:2rem;
+}
+.charts-grid { display:grid; grid-template-columns:1fr; gap:1.5rem; }
+.chart-card {
+    background:var(--bg-card); border:1px solid var(--border-subtle);
+    border-radius:16px; padding:1.5rem; overflow:hidden;
+}
+.chart-card h3 {
+    font-family:var(--font-heading); font-size:1.3rem; font-weight:600;
+    margin-bottom:0.3rem; text-align:center;
+}
+.chart-card .chart-desc {
+    text-align:center; color:var(--text-muted); font-size:0.8rem; margin-bottom:1rem;
+}
+.chart-canvas-wrap {
+    display:flex; justify-content:center; align-items:center;
+    width:100%; overflow:hidden;
+}
+.chart-canvas-wrap canvas { max-width:100%; height:auto; }
+.chart-legend {
+    display:flex; justify-content:center; gap:1.5rem; margin-top:1rem;
+    font-size:0.8rem; color:var(--text-secondary);
+}
+.chart-legend span { display:flex; align-items:center; gap:0.4rem; }
+.legend-dot { width:10px; height:10px; border-radius:50%; display:inline-block; }
+
+/* ===== LEVEL HUD ===== */
+.level-hud {
+    margin-bottom:3rem;
+}
+.v2-card {
+    background: var(--bg-card);
+    border:1px solid var(--border-subtle);
+    border-radius:20px; overflow:hidden;
+    box-shadow: 0 0 80px rgba(139,92,246,0.06);
+}
+.v2-card .v2-header {
+    display:flex; align-items:center; gap:1.5rem;
+    padding:2rem; position:relative;
+    background: linear-gradient(135deg, rgba(139,92,246,0.06) 0%, rgba(212,168,67,0.04) 100%);
+    border-bottom:1px solid var(--border-subtle);
+}
+.v2-avatar {
+    width:100px; height:100px; border-radius:50%;
+    position:relative; flex-shrink:0;
+}
+.v2-avatar canvas { width:100px; height:100px; }
+.v2-avatar-center {
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    text-align:center;
+}
+.v2-avatar-center .v2-lvl {
+    font-family:var(--font-heading); font-size:2.2rem; font-weight:700;
+    line-height:1; display:block;
+}
+.v2-avatar-center .v2-of {
+    font-size:0.6rem; color:var(--text-muted);
+}
+.v2-info { flex:1; min-width:0; }
+.v2-info .v2-tag {
+    display:inline-block; font-size:0.6rem; font-weight:600;
+    letter-spacing:0.15em; text-transform:uppercase;
+    padding:0.15rem 0.6rem; border-radius:100px; margin-bottom:0.4rem;
+}
+.v2-info .v2-rank-name {
+    font-family:var(--font-heading); font-size:1.6rem; font-weight:700;
+    line-height:1.2; margin-bottom:0.2rem;
+}
+.v2-info .v2-desc-text {
+    color:var(--text-secondary); font-size:0.85rem; line-height:1.5;
+    margin-bottom:0.6rem;
+}
+.v2-stars { font-size:1rem; letter-spacing:3px; }
+.v2-xp-row {
+    display:flex; align-items:center; gap:0.6rem; margin-top:0.5rem;
+}
+.v2-xp-label { font-size:0.7rem; color:var(--text-muted); white-space:nowrap; min-width:50px; }
+.v2-xp-track {
+    flex:1; height:6px; background:rgba(255,255,255,0.06);
+    border-radius:3px; overflow:hidden;
+}
+.v2-xp-fill {
+    height:100%; border-radius:3px; transition:width 1.2s ease;
+    background:linear-gradient(90deg, var(--accent-purple), var(--accent-gold));
+}
+.v2-pct { font-size:0.8rem; font-weight:700; min-width:40px; text-align:right; }
+.v2-stat-number {
+    position:absolute; top:1.2rem; right:1.5rem;
+    text-align:right;
+}
+.v2-stat-number .big-pct {
+    font-family:var(--font-heading); font-size:2.5rem; font-weight:700;
+    line-height:1;
+}
+.v2-stat-number .pct-label {
+    font-size:0.65rem; color:var(--text-muted); text-transform:uppercase;
+    letter-spacing:0.1em;
+}
+
+.v2-chakra-row {
+    display:grid; grid-template-columns:repeat(7,1fr);
+    border-top:1px solid var(--border-subtle);
+}
+.v2-chakra-cell {
+    padding:1rem 0.3rem; text-align:center;
+    border-right:1px solid var(--border-subtle);
+    position:relative; transition: background 0.3s;
+}
+.v2-chakra-cell:last-child { border-right:none; }
+.v2-chakra-cell:hover { background:rgba(255,255,255,0.02); }
+.v2-chakra-cell::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:3px;
+    background:var(--cell-color);
+}
+.v2-cell-name {
+    font-size:0.6rem; font-weight:600; text-transform:uppercase;
+    letter-spacing:0.06em; color:var(--text-muted); margin-bottom:0.3rem;
+}
+.v2-cell-level {
+    font-family:var(--font-heading); font-size:1.6rem; font-weight:700;
+    line-height:1; margin-bottom:0.1rem;
+}
+.v2-cell-rank { font-size:0.55rem; color:var(--text-muted); margin-bottom:0.3rem; }
+.v2-cell-bar-track {
+    width:80%; margin:0 auto; height:4px; border-radius:2px;
+    background:rgba(255,255,255,0.06); overflow:hidden;
+}
+.v2-cell-bar-fill { height:100%; border-radius:2px; background:var(--cell-color); transition:width 1s ease; }
+.v2-cell-pct { font-size:0.65rem; font-weight:600; margin-top:0.2rem; }
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:768px){
+    .how-steps { grid-template-columns:1fr; }
+    .insight-grid { grid-template-columns:1fr; }
+    .overview-grid { grid-template-columns:1fr; }
+    .question-item { flex-direction:column; align-items:stretch; gap:0.6rem; }
+    .rating-buttons { justify-content:flex-end; }
+    .results-overview { grid-template-columns:repeat(auto-fit,minmax(90px,1fr)); }
+    .quiz-progress { top:3.2rem; }
+    .chart-card { padding:1rem; }
+    .v2-header { flex-direction:column; text-align:center; }
+    .v2-stat-number { position:static; text-align:center; margin-bottom:0.5rem; }
+    .v2-chakra-row { grid-template-columns:repeat(4,1fr); }
+    .v2-chakra-cell:nth-child(4) { border-right:none; }
+}
+@media(max-width:480px){
+    html { font-size:15px; }
+    .container { padding:0 1rem; }
+    .rating-btn { width:36px; height:32px; font-size:0.8rem; }
+}
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+<div class="top-bar">
+    <div class="container">
+        <a href="questionario-acoes.html" class="top-bar-logo"><span class="icon">&#10022;</span> Jogo da Alma</a>
+        <a href="index.html" class="top-bar-back">&larr; Voltar ao site</a>
+    </div>
+</div>
+
+<!-- ==================== LANDING ==================== -->
+<div class="screen active" id="screen-landing">
+
+    <div class="landing-hero">
+        <div class="container">
+            <span class="tag">Autodiagn&oacute;stico</span>
+            <h1>Diagnóstico das Ações</h1>
+            <p>Descubra o que você realmente FAZ no dia a dia em cada eixo da sua vida. Não é sobre sentir ou ter — é sobre AGIR de forma concreta.</p>
+            <button class="btn-start" onclick="showScreen('explain')">Iniciar Diagnóstico <span>&rarr;</span></button>
+            <br><br>
+            <button class="btn-skip" onclick="skipToResults()">Ir para o final (teste) &rarr;</button>
+        </div>
+    </div>
+
+    <div class="chakra-overview">
+        <div class="container">
+            <h2>Os 7 Eixos da Ação</h2>
+            <p class="subtitle">Cada eixo avalia o que você realmente faz na prática — comportamentos, hábitos, escolhas e ações concretas do dia a dia.</p>
+
+            <div class="overview-grid" id="overviewGrid"></div>
+        </div>
+    </div>
+
+    <div class="insight-section">
+        <div class="container">
+            <h2>Ser — Fazer — Ter</h2>
+            <div class="insight-grid">
+                <div class="insight-card" style="--chakra-color:#8b5cf6">
+                    <div class="emoji">&#128156;</div>
+                    <h4>Interno (Ser)</h4>
+                    <blockquote>Como eu me sinto</blockquote>
+                </div>
+                <div class="insight-card highlighted" style="--chakra-color:#e67e22">
+                    <div class="emoji">&#9889;</div>
+                    <h4>Ações (Fazer)</h4>
+                    <blockquote>O que eu realmente faço</blockquote>
+                </div>
+                <div class="insight-card" style="--chakra-color:#2ecc71">
+                    <div class="emoji">&#127793;</div>
+                    <h4>Externo (Ter)</h4>
+                    <blockquote>O que eu tenho na vida</blockquote>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="how-section">
+        <div class="container">
+            <h2>Como Funciona</h2>
+            <p class="subtitle">O diagnóstico é simples e rápido.</p>
+            <div class="how-steps">
+                <div class="how-step">
+                    <div class="num">1</div>
+                    <h4>Responda</h4>
+                    <p>Para cada afirmação, avalie o que você realmente faz: 0 (não faço), 1 (faço às vezes), 2 (faço de forma consistente) ou 3 (não fazer me prejudica).</p>
+                </div>
+                <div class="how-step">
+                    <div class="num">2</div>
+                    <h4>Navegue</h4>
+                    <p>Uma tela por eixo, com 10 perguntas cada. São 7 telas ao todo — uma para cada centro de energia.</p>
+                </div>
+                <div class="how-step">
+                    <div class="num">3</div>
+                    <h4>Descubra</h4>
+                    <p>Veja seu perfil: frágil, parcial ou sólido em cada eixo, com interpretação e recomendações práticas para suas ações.</p>
+                </div>
+            </div>
+
+            <div style="text-align:center; margin-top:2.5rem;">
+                <button class="btn-start" onclick="showScreen('explain')">Começar Agora <span>&rarr;</span></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== EXPLANATION ==================== -->
+<div class="screen" id="screen-explain">
+    <div class="explain-hero">
+        <div class="container">
+            <span class="tag">Como Responder</span>
+            <h1>Escala de Resposta</h1>
+            <p>Cada afirmação descreve uma ação concreta que você pode (ou não) praticar no seu dia a dia. Leia com atenção e escolha o número que mais representa sua realidade hoje.</p>
+
+            <div class="scale-cards">
+                <div class="scale-card">
+                    <div class="scale-number">0</div>
+                    <div class="scale-label">Não faço</div>
+                    <div class="scale-desc">Essa ação não faz parte da minha rotina. Não pratico isso no meu dia a dia.</div>
+                </div>
+                <div class="scale-card">
+                    <div class="scale-number">1</div>
+                    <div class="scale-label">Faço às vezes</div>
+                    <div class="scale-desc">Pratico de forma irregular ou inconsistente. Às vezes faço, às vezes não.</div>
+                </div>
+                <div class="scale-card">
+                    <div class="scale-number">2</div>
+                    <div class="scale-label">Faço de forma consistente</div>
+                    <div class="scale-desc">Essa ação faz parte da minha rotina de forma estável. Pratico com regularidade.</div>
+                </div>
+                <div class="scale-card">
+                    <div class="scale-number">3</div>
+                    <div class="scale-label">Não fazer isso me prejudica muito</div>
+                    <div class="scale-desc">Não pratico e isso me causa prejuízo real. É uma ação que preciso começar com urgência.</div>
+                </div>
+            </div>
+
+            <div class="explain-note">
+                <p>O nível <strong>3</strong> marca uma <strong>ação prioritária</strong>. Na pontuação, conta como 2 (pois você não faz), mas será destacado em um relatório especial de priorização para indicar onde focar primeiro.</p>
+            </div>
+
+            <div class="explain-cta">
+                <button class="btn-start" onclick="startQuiz()">Começar Questionário <span>&rarr;</span></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== QUIZ ==================== -->
+<div class="screen" id="screen-quiz">
+    <div class="quiz-progress">
+        <div class="container">
+            <div class="progress-dots" id="progressDots"></div>
+            <div class="progress-text" id="progressText"></div>
+            <div class="progress-bar-track"><div class="progress-bar-fill" id="progressBar"></div></div>
+        </div>
+    </div>
+    <div class="container" id="quizContainer"></div>
+</div>
+
+<!-- ==================== RESULTS ==================== -->
+<div class="screen" id="screen-results">
+    <div class="container">
+        <div class="results-header">
+            <h1>Seu Diagnóstico das Ações</h1>
+            <p>Veja o que você realmente faz em cada eixo da sua vida.</p>
+        </div>
+        <div class="level-hud" id="levelHud"></div>
+
+        <div class="results-overview" id="resultsOverview"></div>
+
+        <div class="charts-section">
+            <h2>Visão Geral</h2>
+            <p class="charts-subtitle">Seus 7 eixos em diferentes visualizações.</p>
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <h3>Mapa das Ações</h3>
+                    <p class="chart-desc">Gráfico radar — visão geral do que você faz em cada eixo</p>
+                    <div class="chart-canvas-wrap"><canvas id="chartRadar" width="500" height="500"></canvas></div>
+                    <div class="chart-legend">
+                        <span><span class="legend-dot" style="background:#e67e22"></span> Pontuação (Fazer)</span>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <h3>Pontuação por Eixo</h3>
+                    <p class="chart-desc">Barras horizontais — pontuação em cada eixo</p>
+                    <div class="chart-canvas-wrap"><canvas id="chartBars" width="700" height="380"></canvas></div>
+                </div>
+                <div class="chart-card">
+                    <h3>Faz vs Não Faz</h3>
+                    <p class="chart-desc">Barras empilhadas — o que você faz versus o que falta em cada eixo</p>
+                    <div class="chart-canvas-wrap"><canvas id="chartTotal" width="750" height="420"></canvas></div>
+                    <div class="chart-legend">
+                        <span><span class="legend-dot" style="background:#e67e22"></span> Faz</span>
+                        <span><span class="legend-dot" style="background:rgba(239,68,68,0.6)"></span> Não faz</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="priorityReport"></div>
+
+        <div id="resultsDetails"></div>
+
+        <div id="answersBreakdown"></div>
+
+        <div class="results-footer">
+            <button class="btn-export" onclick="exportPDF()">&#128196; Exportar PDF</button>
+            <button class="btn-restart" onclick="restartQuiz()">&#x21bb; Refazer Diagnóstico</button>
+        </div>
+    </div>
+</div>
+
+<script>
+const CHAKRAS = [
+  {
+    id:'basico', name:'Básico', theme:'Ação, Rotina e Responsabilidade',
+    color:'#e74c3c',
+    centralQuestion:'"Eu ajo mesmo sem certeza?"',
+    phrase:'"Ação é o que transforma intenção em realidade."',
+    questions: [
+      'Crio e mantenho uma rotina estruturada no meu dia a dia',
+      'Assumo responsabilidade pelas minhas obrigações práticas (contas, tarefas, prazos)',
+      'Ajo mesmo quando não tenho certeza do resultado',
+      'Organizo minhas prioridades e executo de forma consistente',
+      'Enfrento situações difíceis em vez de evitá-las',
+      'Cuido ativamente da minha saúde financeira (controlo gastos, planejo)',
+      'Mantenho disciplina em atividades básicas (sono, alimentação, exercício)',
+      'Tomo decisões práticas sem esperar o momento perfeito',
+      'Crio sistemas e hábitos que sustentam minha vida',
+      'Faço o que precisa ser feito, mesmo com medo ou desconforto'
+    ],
+    interpretations: {
+      low: { title:'Baixa execução de base', text:'Evitação, procrastinação e desorganização predominam. As ações não sustentam a vida prática. Muita intenção, pouca execução.', rec:'Comece com micro-ações diárias. Crie uma rotina mínima. Aja antes de se sentir pronto.' },
+      mid: { title:'Ação inconsistente', text:'Algumas ações estruturantes existem, mas não são sustentadas. Oscila entre agir e travar. Progresso intermitente.', rec:'Fortaleça os hábitos que já funcionam. Adicione um novo por vez. Foque em consistência.' },
+      high: { title:'Base de ação sólida', text:'Rotina estruturada, responsabilidade assumida. Age mesmo com incerteza. Vida prática sustentada por ações concretas.', rec:'Mantenha a base. Use essa consistência para expandir para outras áreas.' }
+    }
+  },
+  {
+    id:'sacral', name:'Sacral', theme:'Prazer Consciente e Escolhas de Vida',
+    color:'#e67e22',
+    centralQuestion:'"Eu escolho viver com intenção?"',
+    phrase:'"Prazer saudável é uma escolha ativa, não um acidente."',
+    questions: [
+      'Escolho atividades de prazer de forma consciente (não por fuga ou impulso)',
+      'Crio momentos de lazer e diversão na minha semana',
+      'Pratico atividades que me conectam com meu corpo (esporte, dança, caminhada)',
+      'Descanso de forma intencional (não só quando colapso)',
+      'Busco experiências novas que ampliam minha vida',
+      'Digo não a excessos que parecem prazer mas me prejudicam',
+      'Dedico tempo a hobbies ou interesses que me dão energia',
+      'Permito-me sentir emoções sem reprimir ou exagerar',
+      'Cuido da qualidade das minhas experiências (não só quantidade)',
+      'Equilibro trabalho e vida pessoal de forma consciente'
+    ],
+    interpretations: {
+      low: { title:'Ações de prazer ausentes', text:'Fuga por dopamina, repressão emocional ou vida no automático. As ações não criam experiências de vida genuínas.', rec:'Reintroduza uma atividade prazerosa por semana. Pratique presença. Escolha prazer com intenção.' },
+      mid: { title:'Prazer parcial', text:'Alguns momentos de escolha consciente, mas ainda inconsistente. Oscila entre excessos e privação.', rec:'Sustente os rituais de prazer. Diferencie prazer genuíno de fuga. Crie rotina de experiências.' },
+      high: { title:'Prazer consciente e ativo', text:'Escolhas intencionais de vida. Equilíbrio entre trabalho e prazer. Emoções fluindo com saúde.', rec:'Mantenha a qualidade. Aprofunde as experiências que mais te nutrem.' }
+    }
+  },
+  {
+    id:'plexo', name:'Plexo Solar', theme:'Execução, Conclusão e Progresso',
+    color:'#f1c40f',
+    centralQuestion:'"Eu transformo planos em resultados?"',
+    phrase:'"Resultado é a evidência de que você agiu."',
+    questions: [
+      'Transformo meus planos e ideias em ações concretas',
+      'Concluo o que começo (projetos, tarefas, compromissos)',
+      'Priorizo o que é importante antes do urgente',
+      'Tomo decisões e sigo em frente com elas',
+      'Enfrento desafios ao invés de evitá-los ou delegar por medo',
+      'Meço e acompanho meu progresso nas áreas importantes',
+      'Peço ajuda ou busco recursos quando preciso (não insisto sozinho)',
+      'Estabeleço metas claras e trabalho em direção a elas',
+      'Aprendo com erros e ajusto a rota em vez de desistir',
+      'Mantenho consistência nas ações mesmo quando a motivação cai'
+    ],
+    interpretations: {
+      low: { title:'Baixa execução e conclusão', text:'Muitos planos, poucos resultados. Não termina, evita desafios ou se sobrecarrega. Ação sem direção.', rec:'Foque em completar UMA coisa antes de começar outra. Simplifique metas. Celebre pequenas conclusões.' },
+      mid: { title:'Execução inconsistente', text:'Começa com energia mas perde ritmo. Progresso real mas intermitente. Algumas conquistas, mas abaixo do potencial.', rec:'Crie sistemas de acompanhamento. Reduza distrações. Trabalhe em blocos focados.' },
+      high: { title:'Alta execução e resultados', text:'Transforma intenção em resultado de forma consistente. Conclui, prioriza e avança. Progresso visível.', rec:'Aumente a qualidade e o impacto. Delegue o que puder. Foque nas alavancas certas.' }
+    }
+  },
+  {
+    id:'cardiaco', name:'Cardíaco', theme:'Conexão, Vulnerabilidade e Vínculo',
+    color:'#2ecc71',
+    centralQuestion:'"Eu me conecto e crio vínculos reais?"',
+    phrase:'"Conexão real exige ação: presença, escuta e vulnerabilidade."',
+    questions: [
+      'Inicio e mantenho contato com pessoas importantes para mim',
+      'Pratico escuta ativa (ouço com atenção, sem julgar ou interromper)',
+      'Me mostro vulnerável quando necessário (peço ajuda, compartilho sentimentos)',
+      'Estabeleço limites saudáveis nas minhas relações',
+      'Resolvo conflitos em vez de evitá-los ou explodir',
+      'Demonstro carinho e afeto de forma consistente',
+      'Invisto tempo e energia nas minhas relações importantes',
+      'Comunico minhas necessidades de forma clara e respeitosa',
+      'Perdoo e sigo em frente em vez de guardar ressentimento',
+      'Crio momentos de conexão genuína (conversas profundas, presença, troca)'
+    ],
+    interpretations: {
+      low: { title:'Ações de conexão ausentes', text:'Evita vulnerabilidade, se fecha ou se anula nas relações. As ações não criam vínculos reais. Isolamento ativo.', rec:'Comece com uma conversa honesta por semana. Pratique escuta. Mostre-se vulnerável em doses pequenas.' },
+      mid: { title:'Conexão parcial', text:'Algumas ações de vínculo, mas inconsistentes. Oscila entre se abrir e se fechar. Relações presentes mas superficiais.', rec:'Aprofunde uma relação de cada vez. Pratique resolver conflitos. Invista em presença.' },
+      high: { title:'Conexão ativa e saudável', text:'Se conecta, comunica, cria vínculos reais. Vulnerabilidade com limites. Relações nutridas por ações concretas.', rec:'Mantenha a qualidade. Expanda seu círculo com intenção. Continue praticando vulnerabilidade.' }
+    }
+  },
+  {
+    id:'laringeo', name:'Laríngeo', theme:'Expressão, Posicionamento e Comunicação',
+    color:'#3498db',
+    centralQuestion:'"Eu me expresso e me posiciono no mundo?"',
+    phrase:'"Expressão não é só falar — é agir para existir no mundo."',
+    questions: [
+      'Me posiciono quando tenho algo importante a dizer',
+      'Compartilho minhas ideias, opiniões ou conhecimento com outros',
+      'Crio conteúdo, escrevo ou me expresso de alguma forma regular',
+      'Falo sobre o que penso mesmo quando é desconfortável',
+      'Busco feedback e ouço críticas com abertura',
+      'Participo ativamente de conversas e debates relevantes',
+      'Uso minha voz para defender o que acredito',
+      'Comunico limites e necessidades com clareza',
+      'Me exponho em contextos novos (apresentações, publicações, conversas)',
+      'Pratico ser autêntico mesmo em ambientes que pressionam a conformidade'
+    ],
+    interpretations: {
+      low: { title:'Expressão reprimida', text:'Fica em silêncio, não se expõe, evita posicionamento. Ações que mantêm a invisibilidade. Voz contida.', rec:'Comece a escrever ou falar sobre algo que importa. Exponha-se em contextos seguros. Pratique micro-posicionamentos.' },
+      mid: { title:'Expressão inconsistente', text:'Se expressa em alguns contextos mas se contém em outros. Voz presente mas seletiva.', rec:'Expanda os contextos de expressão. Pratique em ambientes menos confortáveis. Crie um canal regular.' },
+      high: { title:'Expressão ativa e autêntica', text:'Fala, escreve, publica, compartilha. Se posiciona com clareza. Voz com presença e impacto no mundo.', rec:'Amplie o alcance. Use a voz com mais estratégia e intenção. Lidere pelo exemplo.' }
+    }
+  },
+  {
+    id:'frontal', name:'Frontal', theme:'Planejamento, Decisão e Direção',
+    color:'#6c5ce7',
+    centralQuestion:'"Eu planejo, decido e direciono minha vida?"',
+    phrase:'"Clareza sem ação é ilusão. Planejamento é a ponte."',
+    questions: [
+      'Planejo minha semana ou mês com intenção (não vivo só reagindo)',
+      'Tomo decisões importantes sem procrastinar excessivamente',
+      'Reviso e ajusto meus planos regularmente',
+      'Busco conhecimento e ferramentas que me ajudam a crescer',
+      'Analiso consequências antes de tomar decisões relevantes',
+      'Tenho um sistema de organização que uso ativamente',
+      'Diferencio o essencial do supérfluo nas minhas escolhas',
+      'Invisto tempo em aprendizado estratégico (não só consumo aleatório)',
+      'Reflito sobre meus erros e extraio lições práticas',
+      'Alinho minhas ações diárias com meus objetivos maiores'
+    ],
+    interpretations: {
+      low: { title:'Falta de direcionamento prático', text:'Consome demais, não decide, não planeja. Vida reativa sem estratégia. Confusão operacional.', rec:'Crie um planejamento semanal simples. Tome uma decisão pendente hoje. Reduza o consumo passivo de informação.' },
+      mid: { title:'Direcionamento parcial', text:'Algum planejamento, mas inconsistente. Decisões tomadas mas sem follow-through. Estratégia presente mas frágil.', rec:'Fortaleça o sistema de revisão. Tome decisões com mais velocidade. Alinhe ações com metas.' },
+      high: { title:'Direcionamento ativo e estratégico', text:'Planeja, decide, direciona. Ações alinhadas com visão. Estratégia operando no dia a dia.', rec:'Refine a qualidade das decisões. Delegue o operacional. Foque em decisões de alto impacto.' }
+    }
+  },
+  {
+    id:'coronario', name:'Coronário', theme:'Propósito, Reflexão e Evolução',
+    color:'#a855f7',
+    centralQuestion:'"Eu busco sentido e alinhos minhas ações com propósito?"',
+    phrase:'"Propósito não se descobre — se constrói com ações intencionais."',
+    questions: [
+      'Dedico tempo para reflexão profunda sobre minha vida e caminho',
+      'Alinhos minhas ações diárias com algo maior que eu (propósito, missão, contribuição)',
+      'Busco evolução pessoal de forma ativa (leitura, estudo, práticas)',
+      'Pratico algo que expande minha consciência (meditação, escrita reflexiva, natureza)',
+      'Reviso periodicamente se minha vida está alinhada com meus valores',
+      'Contribuo para algo além de mim (comunidade, projeto, causa)',
+      'Busco sentido mesmo em experiências difíceis ou frustrantes',
+      'Tenho conversas ou reflexões sobre significado e propósito',
+      'Tomo decisões considerando impacto de longo prazo (não só imediato)',
+      'Atuo de forma coerente com o que acredito (integridade entre discurso e ação)'
+    ],
+    interpretations: {
+      low: { title:'Ações sem propósito', text:'Vive no automático, evita reflexão. Ações desconectadas de significado. Movimento sem direção maior.', rec:'Reserve 10 minutos diários para reflexão. Pergunte-se "por quê" antes de agir. Conecte uma ação diária com um valor seu.' },
+      mid: { title:'Propósito emergente', text:'Momentos de reflexão e busca, mas não sustentados. Ações parcialmente alinhadas. Significado presente mas frágil.', rec:'Crie um ritual de reflexão semanal. Escolha um projeto que represente seus valores. Aprofunde a prática.' },
+      high: { title:'Ação com propósito', text:'Reflexão ativa, ações alinhadas com valores. Contribuição real. Vida com coerência e significado construído.', rec:'Lidere pelo exemplo. Inspire outros. Continue refinando a coerência entre ação e propósito.' }
+    }
+  }
+];
+
+const LEVELS = [
+    { level:5, min:80, name:'Mestre', desc:'Domínio elevado. Consciência desperta e ativa.', colorA:'#d4a843', colorB:'#f1c40f' },
+    { level:4, min:60, name:'Guardião', desc:'Consciência expandida. Equilíbrio consistente.', colorA:'#2ecc71', colorB:'#27ae60' },
+    { level:3, min:40, name:'Buscador', desc:'Em evolução ativa. Consciência em expansão.', colorA:'#3498db', colorB:'#2980b9' },
+    { level:2, min:20, name:'Aprendiz', desc:'Início da jornada. Reconhecimento dos padrões.', colorA:'#e67e22', colorB:'#d35400' },
+    { level:1, min:0, name:'Desperto', desc:'Primeiro passo. A consciência começa a surgir.', colorA:'#95a5a6', colorB:'#7f8c8d' }
+];
+
+const answers = {};
+let currentChakraIndex = 0;
+
+(function buildOverviewGrid() {
+    const grid = document.getElementById('overviewGrid');
+    if (!grid) return;
+    grid.innerHTML = CHAKRAS.map(c => `
+        <div class="overview-card" style="--chakra-color:${c.color}">
+            <h3>${c.name}</h3>
+            <div class="theme">${c.theme}</div>
+            <p class="question">${c.centralQuestion}</p>
+            <div class="states">
+                <span class="state-tag" style="background:rgba(230,126,34,0.12);color:#e67e22;border:1px solid rgba(230,126,34,0.2)">Ação</span>
+            </div>
+        </div>
+    `).join('');
+})();
+
+function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen-' + id).classList.add('active');
+    window.scrollTo(0, 0);
+}
+
+function startQuiz() {
+    currentChakraIndex = 0;
+    CHAKRAS.forEach(c => {
+        answers[c.id] = new Array(10).fill(null);
+    });
+    buildQuiz();
+    showScreen('quiz');
+    showChakraPage(0);
+}
+
+function buildQuiz() {
+    const container = document.getElementById('quizContainer');
+    container.innerHTML = '';
+
+    const dotsContainer = document.getElementById('progressDots');
+    dotsContainer.innerHTML = '';
+    CHAKRAS.forEach((c, i) => {
+        const dot = document.createElement('div');
+        dot.className = 'progress-dot';
+        dot.style.setProperty('--dot-color', c.color);
+        dot.title = c.name;
+        dot.onclick = () => {
+            if (canNavigateTo(i)) showChakraPage(i);
+        };
+        dotsContainer.appendChild(dot);
+    });
+
+    CHAKRAS.forEach((c, ci) => {
+        const page = document.createElement('div');
+        page.className = 'chakra-page';
+        page.id = 'chakra-page-' + ci;
+        page.style.setProperty('--chakra-color', c.color);
+
+        let html = `
+            <div class="chakra-page-header" style="--chakra-color:${c.color}">
+                <div class="theme-label">${c.theme}</div>
+                <h2>${c.name}</h2>
+                <div class="desc">${c.centralQuestion}</div>
+            </div>
+            <div class="scale-legend">
+                <div class="scale-legend-item"><span class="scale-legend-num">0</span> Não faço</div>
+                <div class="scale-legend-item"><span class="scale-legend-num">1</span> Às vezes</div>
+                <div class="scale-legend-item"><span class="scale-legend-num">2</span> Consistente</div>
+                <div class="scale-legend-item"><span class="scale-legend-num">3</span> Prejudica não fazer</div>
+            </div>
+        `;
+
+        html += `<div class="question-group">
+            <div class="question-group-header">
+                <div class="group-indicator fazer"></div>
+                <h3>Ações Concretas (Fazer)</h3>
+                <span class="group-tag fazer">Ação</span>
+            </div>`;
+        c.questions.forEach((q, qi) => {
+            html += buildQuestionItem(c.id, qi, q);
+        });
+        html += '</div>';
+
+        html += `<div class="quiz-nav">
+            <button class="btn-nav btn-prev" onclick="prevChakra()" ${ci === 0 ? 'style="visibility:hidden"' : ''}>&larr; Anterior</button>
+            <button class="btn-nav btn-next" onclick="nextChakra()">${ci === CHAKRAS.length - 1 ? 'Ver Resultado &rarr;' : 'Próximo &rarr;'}</button>
+        </div>`;
+
+        page.innerHTML = html;
+        container.appendChild(page);
+    });
+}
+
+function buildQuestionItem(chakraId, index, text) {
+    return `<div class="question-item">
+        <div class="question-text">${text}</div>
+        <div class="rating-buttons">
+            ${[0,1,2,3].map(v =>
+                `<button class="rating-btn${v === 3 ? ' rating-btn-priority' : ''}" data-chakra="${chakraId}" data-index="${index}" data-value="${v}" onclick="setAnswer(this, '${chakraId}',${index},${v})">${v}</button>`
+            ).join('')}
+        </div>
+    </div>`;
+}
+
+function setAnswer(btn, chakraId, index, value) {
+    answers[chakraId][index] = value;
+    const siblings = btn.parentElement.querySelectorAll('.rating-btn');
+    siblings.forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+}
+
+function showChakraPage(index) {
+    currentChakraIndex = index;
+    document.querySelectorAll('.chakra-page').forEach(p => p.classList.remove('active'));
+    const page = document.getElementById('chakra-page-' + index);
+    if (page) page.classList.add('active');
+    updateProgress();
+    window.scrollTo(0, 0);
+}
+
+function updateProgress() {
+    const dots = document.querySelectorAll('.progress-dot');
+    dots.forEach((d, i) => {
+        d.classList.remove('current', 'done');
+        if (i < currentChakraIndex) d.classList.add('done');
+        if (i === currentChakraIndex) d.classList.add('current');
+    });
+    document.getElementById('progressText').textContent =
+        `${CHAKRAS[currentChakraIndex].name} — ${currentChakraIndex + 1} de ${CHAKRAS.length}`;
+    document.getElementById('progressBar').style.width =
+        ((currentChakraIndex + 1) / CHAKRAS.length * 100) + '%';
+}
+
+function canNavigateTo(index) {
+    for (let i = 0; i < index; i++) {
+        const c = CHAKRAS[i];
+        const a = answers[c.id];
+        if (a.some(v => v === null)) return false;
+    }
+    return true;
+}
+
+function isCurrentPageComplete() {
+    const c = CHAKRAS[currentChakraIndex];
+    const a = answers[c.id];
+    return !a.some(v => v === null);
+}
+
+function nextChakra() {
+    if (!isCurrentPageComplete()) {
+        const c = CHAKRAS[currentChakraIndex];
+        const a = answers[c.id];
+        const firstBlank = a.findIndex(v => v === null);
+        if (firstBlank !== -1) {
+            highlightUnanswered(c.id, firstBlank);
+            return;
+        }
+        return;
+    }
+    if (currentChakraIndex < CHAKRAS.length - 1) {
+        showChakraPage(currentChakraIndex + 1);
+    } else {
+        showResults();
+    }
+}
+
+function prevChakra() {
+    if (currentChakraIndex > 0) showChakraPage(currentChakraIndex - 1);
+}
+
+function highlightUnanswered(chakraId, index) {
+    const btn = document.querySelector(
+        `[data-chakra="${chakraId}"][data-index="${index}"][data-value="0"]`
+    );
+    if (btn) {
+        const item = btn.closest('.question-item');
+        item.style.borderColor = '#e74c3c';
+        item.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setTimeout(() => { item.style.borderColor = ''; }, 2000);
+    }
+}
+
+function showResults() {
+    showScreen('results');
+    renderResults();
+}
+
+function getScoresArray() {
+    return CHAKRAS.map(c => {
+        const a = answers[c.id];
+        const score = a.reduce((s,v) => s + Math.min(v, 2), 0);
+        return { name: c.name, color: c.color, score: score };
+    });
+}
+
+function getStatus(score) {
+    if (score >= 15) return 'high';
+    if (score >= 8) return 'mid';
+    return 'low';
+}
+
+function getStatusLabel(status) {
+    return { high:'Sólido', mid:'Parcial', low:'Frágil' }[status];
+}
+
+function getStatusClass(status) {
+    return { high:'status-equilibrado', mid:'status-misto', low:'status-bloqueado' }[status];
+}
+
+function getChakraLevel(score) {
+    const pct = Math.round((score / 20) * 100);
+    const level = LEVELS.find(l => pct >= l.min) || LEVELS[LEVELS.length - 1];
+    return { level: level.level, name: level.name, desc: level.desc, pct, colorA: level.colorA, colorB: level.colorB };
+}
+
+function getOverallLevel(scores) {
+    const avgPct = Math.round(scores.reduce((s, sc) => s + (sc.score / 20) * 100, 0) / scores.length);
+    const level = LEVELS.find(l => avgPct >= l.min) || LEVELS[LEVELS.length - 1];
+    return { level: level.level, name: level.name, desc: level.desc, pct: avgPct, colorA: level.colorA, colorB: level.colorB };
+}
+
+function renderResults() {
+    const overview = document.getElementById('resultsOverview');
+    const details = document.getElementById('resultsDetails');
+    overview.innerHTML = '';
+    details.innerHTML = '';
+
+    const scores = getScoresArray();
+
+    scores.forEach((sc, idx) => {
+        const c = CHAKRAS[idx];
+        const status = getStatus(sc.score);
+        const interp = c.interpretations[status];
+        const lvl = getChakraLevel(sc.score);
+        const pct = Math.round((sc.score / 20) * 100);
+
+        overview.innerHTML += `
+            <div class="result-mini" style="--chakra-color:${c.color}">
+                <div class="name">${c.name}</div>
+                <div class="score-pct" style="color:${c.color}">${pct}%</div>
+                <span class="status-label ${getStatusClass(status)}">${getStatusLabel(status)}</span>
+            </div>`;
+
+        let detailStars = '';
+        for (let si = 1; si <= 5; si++) {
+            detailStars += si <= lvl.level ? `<span style="color:${c.color}">&#9733;</span>` : '<span style="color:var(--text-muted)">&#9734;</span>';
+        }
+
+        details.innerHTML += `
+            <div class="result-detail" style="--chakra-color:${c.color}">
+                <div class="result-detail-header">
+                    <h3>${c.name}</h3>
+                    <div style="text-align:right">
+                        <span style="font-size:0.9rem;letter-spacing:3px">${detailStars}</span>
+                        <div style="font-size:0.7rem;color:${c.color};font-weight:600;margin-top:0.1rem">Nv.${lvl.level} — ${lvl.name}</div>
+                    </div>
+                </div>
+                <div class="score-bars">
+                    <div class="score-row">
+                        <div class="score-label">
+                            <span class="label-text fazer-label">Fazer (Ação)</span>
+                            <span class="score-value">${sc.score} / 20</span>
+                        </div>
+                        <div class="score-track"><div class="score-fill fazer-fill" style="width:${sc.score/20*100}%"></div></div>
+                    </div>
+                </div>
+                <div class="result-interpretation">
+                    <h4>${interp.title}</h4>
+                    <p>${interp.text}</p>
+                    <p style="margin-top:0.6rem"><strong style="color:var(--accent-gold)">Recomendação:</strong> ${interp.rec}</p>
+                    <span class="phrase">${c.phrase}</span>
+                </div>
+            </div>`;
+    });
+
+    renderLevelHudV2(scores);
+    renderPriorityReport();
+    renderAnswersBreakdown();
+    setTimeout(drawAllCharts, 100);
+}
+
+function restartQuiz() {
+    showScreen('landing');
+}
+
+function renderPriorityReport() {
+    const container = document.getElementById('priorityReport');
+    const priorities = [];
+
+    CHAKRAS.forEach(c => {
+        const a = answers[c.id];
+        const priorityQuestions = [];
+
+        a.forEach((v, i) => {
+            if (v === 3) priorityQuestions.push(c.questions[i]);
+        });
+
+        if (priorityQuestions.length > 0) {
+            priorities.push({ chakra: c, questions: priorityQuestions, total: priorityQuestions.length });
+        }
+    });
+
+    if (priorities.length === 0) {
+        container.innerHTML = `
+            <div class="priority-report">
+                <h2 class="priority-report-title">&#9888; Ações Prioritárias</h2>
+                <p class="priority-report-subtitle">Ações marcadas como nível 3 — não fazer prejudica muito atualmente</p>
+                <div class="priority-empty">Nenhuma ação foi marcada como nível 3. Isso é um ótimo sinal!</div>
+            </div>`;
+        return;
+    }
+
+    priorities.sort((a, b) => b.total - a.total);
+
+    let html = `
+        <div class="priority-report">
+            <h2 class="priority-report-title">&#9888; Ações Prioritárias</h2>
+            <p class="priority-report-subtitle">Ações marcadas como nível 3 — não fazer prejudica muito e precisa de atenção prioritária</p>`;
+
+    priorities.forEach(p => {
+        html += `
+            <div class="priority-chakra-block" style="--chakra-block-color:${p.chakra.color}">
+                <div class="priority-chakra-header">
+                    <div class="priority-chakra-name" style="color:${p.chakra.color}">${p.chakra.name}</div>
+                    <span class="priority-count">${p.total} ação${p.total > 1 ? 'ões' : ''} nível 3</span>
+                </div>`;
+
+        p.questions.forEach(q => {
+            html += `<div class="priority-question">${q}</div>`;
+        });
+
+        html += `</div>`;
+    });
+
+    html += `</div>`;
+    container.innerHTML = html;
+}
+
+function skipToResults() {
+    const dummyScores = [
+        [2,1,3,2,0,1,2,1,1,2],
+        [1,1,0,1,1,3,0,2,0,1],
+        [1,2,1,1,3,1,2,1,1,2],
+        [2,1,0,1,0,1,0,0,1,3],
+        [1,2,3,1,2,1,1,2,2,1],
+        [0,0,1,3,1,0,0,1,0,2],
+        [1,1,2,1,2,1,3,2,1,2],
+    ];
+    CHAKRAS.forEach((c, i) => { answers[c.id] = dummyScores[i]; });
+    showResults();
+}
+
+function drawAllCharts() {
+    const scores = getScoresArray();
+    drawRadarChart(scores);
+    drawBarChart(scores);
+    drawTotalChart(scores);
+}
+
+function drawRadarChart(scores) {
+    const canvas = document.getElementById('chartRadar');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+    const cx = W / 2, cy = H / 2;
+    const maxVal = 20;
+    const radius = Math.min(cx, cy) - 60;
+    const n = scores.length;
+
+    ctx.clearRect(0, 0, W, H);
+
+    for (let ring = 1; ring <= 4; ring++) {
+        const r = radius * (ring / 4);
+        ctx.beginPath();
+        for (let i = 0; i <= n; i++) {
+            const angle = (Math.PI * 2 * (i % n)) / n - Math.PI / 2;
+            const x = cx + r * Math.cos(angle);
+            const y = cy + r * Math.sin(angle);
+            i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+        ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+    }
+
+    for (let i = 0; i < n; i++) {
+        const angle = (Math.PI * 2 * i) / n - Math.PI / 2;
+        const x = cx + radius * Math.cos(angle);
+        const y = cy + radius * Math.sin(angle);
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(x, y);
+        ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+    }
+
+    ctx.beginPath();
+    scores.forEach((s, i) => {
+        const angle = (Math.PI * 2 * i) / n - Math.PI / 2;
+        const r = radius * (s.score / maxVal);
+        const x = cx + r * Math.cos(angle);
+        const y = cy + r * Math.sin(angle);
+        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    });
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(230,126,34,0.18)';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(230,126,34,0.8)';
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+
+    scores.forEach((s, i) => {
+        const angle = (Math.PI * 2 * i) / n - Math.PI / 2;
+        const labelR = radius + 28;
+        const x = cx + labelR * Math.cos(angle);
+        const y = cy + labelR * Math.sin(angle);
+        ctx.fillStyle = s.color;
+        ctx.font = '600 13px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(s.name, x, y);
+    });
+
+    scores.forEach((s, i) => {
+        const angle = (Math.PI * 2 * i) / n - Math.PI / 2;
+        const val = s.score;
+        const r = radius * (val / maxVal);
+        const x = cx + r * Math.cos(angle);
+        const y = cy + r * Math.sin(angle);
+        ctx.beginPath();
+        ctx.arc(x, y, 5, 0, Math.PI * 2);
+        ctx.fillStyle = s.color;
+        ctx.fill();
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+    });
+}
+
+function drawBarChart(scores) {
+    const canvas = document.getElementById('chartBars');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+
+    const marginLeft = 90, marginRight = 50, marginTop = 20, marginBottom = 30;
+    const chartW = W - marginLeft - marginRight;
+    const chartH = H - marginTop - marginBottom;
+    const barGroupH = chartH / scores.length;
+    const barH = barGroupH * 0.45;
+    const maxVal = 20;
+
+    for (let tick = 0; tick <= 20; tick += 5) {
+        const x = marginLeft + (tick / maxVal) * chartW;
+        ctx.beginPath();
+        ctx.moveTo(x, marginTop);
+        ctx.lineTo(x, H - marginBottom);
+        ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        ctx.fillStyle = 'rgba(255,255,255,0.25)';
+        ctx.font = '11px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(tick, x, H - marginBottom + 16);
+    }
+
+    scores.forEach((s, i) => {
+        const groupY = marginTop + i * barGroupH;
+        const centerY = groupY + barGroupH / 2;
+        const bY = centerY - barH / 2;
+        const bW = (s.score / maxVal) * chartW;
+
+        ctx.fillStyle = s.color;
+        ctx.font = '600 12px Inter, sans-serif';
+        ctx.textAlign = 'right';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(s.name, marginLeft - 10, centerY);
+
+        const pct = s.score / maxVal;
+        let gradColorA, gradColorB;
+        if (pct >= 0.75) {
+            gradColorA = 'rgba(46,204,113,0.8)'; gradColorB = 'rgba(39,174,96,0.9)';
+        } else if (pct >= 0.4) {
+            gradColorA = 'rgba(241,196,15,0.8)'; gradColorB = 'rgba(243,156,18,0.9)';
+        } else {
+            gradColorA = 'rgba(231,76,60,0.8)'; gradColorB = 'rgba(192,57,43,0.9)';
+        }
+        const grad = ctx.createLinearGradient(marginLeft, 0, marginLeft + bW, 0);
+        grad.addColorStop(0, gradColorA);
+        grad.addColorStop(1, gradColorB);
+        ctx.fillStyle = grad;
+        roundRect(ctx, marginLeft, bY, bW, barH, 4);
+        ctx.fill();
+
+        if (s.score > 0) {
+            ctx.fillStyle = '#fff';
+            ctx.font = '600 11px Inter, sans-serif';
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(s.score + '/20', marginLeft + bW + 8, centerY);
+        }
+    });
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+    if (w < 1) w = 1;
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
+}
+
+function drawTotalChart(scores) {
+    const canvas = document.getElementById('chartTotal');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+
+    const mL = 100, mR = 70, mT = 25, mB = 30;
+    const chartW = W - mL - mR;
+    const chartH = H - mT - mB;
+    const n = scores.length;
+    const rowH = chartH / n;
+    const barH = rowH * 0.5;
+    const maxVal = 20;
+
+    for (let tick = 0; tick <= 20; tick += 5) {
+        const x = mL + (tick / maxVal) * chartW;
+        ctx.beginPath();
+        ctx.moveTo(x, mT);
+        ctx.lineTo(x, H - mB);
+        ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        ctx.fillStyle = 'rgba(255,255,255,0.25)';
+        ctx.font = '11px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(tick, x, H - mB + 16);
+    }
+
+    scores.forEach((s, i) => {
+        const y = mT + i * rowH + (rowH - barH) / 2;
+        const centerY = y + barH / 2;
+
+        const faz = s.score;
+        const naoFaz = maxVal - faz;
+        const pct = Math.round((faz / maxVal) * 100);
+
+        ctx.fillStyle = s.color;
+        ctx.font = '600 13px Inter, sans-serif';
+        ctx.textAlign = 'right';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(s.name, mL - 12, centerY);
+
+        const fazW = (faz / maxVal) * chartW;
+        const naoFazW = (naoFaz / maxVal) * chartW;
+
+        const gradPos = ctx.createLinearGradient(mL, 0, mL + fazW, 0);
+        gradPos.addColorStop(0, 'rgba(230,126,34,0.5)');
+        gradPos.addColorStop(1, 'rgba(230,126,34,0.85)');
+        ctx.fillStyle = gradPos;
+        roundRect(ctx, mL, y, fazW, barH, 0);
+        ctx.fill();
+
+        const gradNeg = ctx.createLinearGradient(mL + fazW, 0, mL + fazW + naoFazW, 0);
+        gradNeg.addColorStop(0, 'rgba(239,68,68,0.35)');
+        gradNeg.addColorStop(1, 'rgba(239,68,68,0.7)');
+        ctx.fillStyle = gradNeg;
+        roundRect(ctx, mL + fazW, y, naoFazW, barH, 0);
+        ctx.fill();
+
+        ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+        ctx.lineWidth = 1;
+        roundRect(ctx, mL, y, chartW, barH, 0);
+        ctx.stroke();
+
+        if (fazW > 30) {
+            ctx.fillStyle = 'rgba(255,255,255,0.9)';
+            ctx.font = '600 11px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(faz, mL + fazW / 2, centerY);
+        }
+        if (naoFazW > 30) {
+            ctx.fillStyle = 'rgba(255,255,255,0.85)';
+            ctx.font = '600 11px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(naoFaz, mL + fazW + naoFazW / 2, centerY);
+        }
+
+        const pctColor = pct >= 75 ? '#2ecc71' : pct >= 40 ? '#f1c40f' : '#ef4444';
+        ctx.fillStyle = pctColor;
+        ctx.font = '700 14px Inter, sans-serif';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(pct + '%', mL + chartW + 10, centerY);
+    });
+}
+
+function renderLevelHudV2(scores) {
+    const hud = document.getElementById('levelHud');
+    const overall = getOverallLevel(scores);
+    const nextLevel = LEVELS.find(l => l.level === overall.level + 1);
+    const currentLevelDef = LEVELS.find(l => l.level === overall.level);
+    const progressInLevel = nextLevel
+        ? Math.round(((overall.pct - currentLevelDef.min) / (nextLevel.min - currentLevelDef.min)) * 100)
+        : 100;
+
+    let starsHtml = '';
+    for (let i = 1; i <= 5; i++) {
+        starsHtml += i <= overall.level
+            ? '<span style="color:var(--accent-gold)">&#9733;</span>'
+            : '<span style="color:var(--text-muted)">&#9734;</span>';
+    }
+
+    let cellsHtml = '';
+    scores.forEach((s, i) => {
+        const chakra = CHAKRAS[i];
+        const lv = getChakraLevel(s.score);
+        cellsHtml += `
+            <div class="v2-chakra-cell" style="--cell-color:${chakra.color}">
+                <div class="v2-cell-name">${chakra.name}</div>
+                <div class="v2-cell-level" style="color:${chakra.color}">${lv.level}</div>
+                <div class="v2-cell-rank">${lv.name}</div>
+                <div class="v2-cell-bar-track">
+                    <div class="v2-cell-bar-fill" style="width:${lv.pct}%"></div>
+                </div>
+                <div class="v2-cell-pct" style="color:${lv.pct >= 65 ? '#2ecc71' : lv.pct >= 40 ? '#eab308' : '#ef4444'}">${lv.pct}%</div>
+            </div>`;
+    });
+
+    const tagColor = overall.colorA;
+    const tagBg = overall.colorA + '20';
+
+    hud.innerHTML = `
+        <div class="v2-card" style="margin-top:1rem">
+            <div style="text-align:center;padding:0.6rem;font-size:0.7rem;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border-subtle);background:rgba(255,255,255,0.01)">Diagnóstico das Ações — Player Card</div>
+            <div class="v2-header">
+                <div class="v2-avatar">
+                    <canvas id="v2Ring" width="200" height="200"></canvas>
+                    <div class="v2-avatar-center">
+                        <span class="v2-lvl" style="color:${overall.colorA}">${overall.level}</span>
+                        <span class="v2-of">/ 5</span>
+                    </div>
+                </div>
+                <div class="v2-info">
+                    <span class="v2-tag" style="color:${tagColor};background:${tagBg};border:1px solid ${tagColor}44">${overall.name}</span>
+                    <div class="v2-rank-name">Nível ${overall.level} — ${overall.name}</div>
+                    <div class="v2-desc-text">${overall.desc}</div>
+                    <div class="v2-stars">${starsHtml}</div>
+                    <div class="v2-xp-row">
+                        <span class="v2-xp-label">Progresso</span>
+                        <div class="v2-xp-track"><div class="v2-xp-fill" id="v2XpFill" style="width:0%"></div></div>
+                        <span class="v2-pct" style="color:${overall.colorA}">${overall.pct}%</span>
+                    </div>
+                    ${nextLevel ? `<div style="font-size:0.65rem;color:var(--text-muted);margin-top:0.3rem">Próximo nível: ${nextLevel.name} (${nextLevel.min}%)</div>` : '<div style="font-size:0.65rem;color:#a855f7;margin-top:0.3rem">Nível máximo alcançado!</div>'}
+                </div>
+                <div class="v2-stat-number">
+                    <div class="big-pct" style="color:${overall.colorA}">${overall.pct}<span style="font-size:1.2rem">%</span></div>
+                    <div class="pct-label">ação</div>
+                </div>
+            </div>
+            <div class="v2-chakra-row">${cellsHtml}</div>
+        </div>`;
+
+    setTimeout(() => {
+        const fill = document.getElementById('v2XpFill');
+        if (fill) fill.style.width = progressInLevel + '%';
+        drawV2Ring(overall);
+    }, 150);
+}
+
+function drawV2Ring(overall) {
+    const canvas = document.getElementById('v2Ring');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+    const cx = W / 2, cy = H / 2;
+    const r = (Math.min(W, H) / 2) - 14;
+    const lineW = 8;
+
+    ctx.clearRect(0, 0, W, H);
+
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+    ctx.lineWidth = lineW;
+    ctx.stroke();
+
+    const startAngle = -Math.PI / 2;
+    const pctNorm = overall.pct / 100;
+    const endAngle = startAngle + (Math.PI * 2 * pctNorm);
+
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, startAngle, endAngle);
+    ctx.strokeStyle = overall.colorA;
+    ctx.lineWidth = lineW;
+    ctx.lineCap = 'round';
+    ctx.stroke();
+
+    ctx.shadowColor = overall.colorA;
+    ctx.shadowBlur = 12;
+    ctx.beginPath();
+    ctx.arc(
+        cx + r * Math.cos(endAngle),
+        cy + r * Math.sin(endAngle),
+        lineW / 2, 0, Math.PI * 2
+    );
+    ctx.fillStyle = overall.colorA;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    const colors = ['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#6c5ce7','#a855f7'];
+    colors.forEach((col, i) => {
+        const angle = startAngle + (Math.PI * 2 * ((i + 1) / 7));
+        const x = cx + (r - lineW - 6) * Math.cos(angle);
+        const y = cy + (r - lineW - 6) * Math.sin(angle);
+        ctx.beginPath();
+        ctx.arc(x, y, 2.5, 0, Math.PI * 2);
+        ctx.fillStyle = col + '55';
+        ctx.fill();
+    });
+}
+
+function renderAnswersBreakdown() {
+    const container = document.getElementById('answersBreakdown');
+    const labelMap = { 0:'Não faço', 1:'Às vezes', 2:'Consistente', 3:'Prejudica não fazer' };
+
+    let html = `
+        <div class="answers-breakdown">
+            <h2 class="answers-breakdown-title">Gabarito Completo</h2>
+            <p class="answers-breakdown-subtitle">Todas as ações com suas respostas — use para comparar sua evolução ao longo do tempo.</p>`;
+
+    CHAKRAS.forEach(c => {
+        const a = answers[c.id];
+        const score = a.reduce((s,v) => s + Math.min(v, 2), 0);
+
+        html += `<div class="ab-chakra-block">
+            <div class="ab-chakra-header" style="background:${c.color}22">
+                <div class="ab-chakra-name" style="color:${c.color}">${c.name}</div>
+                <div class="ab-chakra-scores">Fazer: ${score}/20</div>
+            </div>`;
+
+        c.questions.forEach((q, i) => {
+            const v = a[i];
+            html += `<div class="ab-row">
+                <div class="ab-question"><span class="ab-num">${i+1}.</span>${q}</div>
+                <div class="ab-answer" data-val="${v}">${v} — ${labelMap[v]}</div>
+            </div>`;
+        });
+
+        html += `</div>`;
+    });
+
+    html += `</div>`;
+    container.innerHTML = html;
+}
+
+function hexToRgb(hex) {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return { r, g, b };
+}
+
+function addAnswersPages(pdf, pageW, pageH, margin) {
+    const usableW = pageW - margin * 2;
+    const labelMap = { 0:'Não faço', 1:'Às vezes', 2:'Consistente', 3:'Prejudica não fazer' };
+    const colAnswer = 140;
+
+    function newPage() {
+        pdf.addPage();
+        pdf.setFillColor(10, 10, 15);
+        pdf.rect(0, 0, pageW, pageH, 'F');
+        return margin;
+    }
+
+    let y = newPage();
+
+    pdf.setFont('helvetica', 'bold');
+    pdf.setFontSize(16);
+    pdf.setTextColor(212, 168, 67);
+    pdf.text('Respostas Completas — Ações (Fazer)', margin, y + 6);
+    y += 10;
+
+    pdf.setFontSize(8);
+    pdf.setTextColor(150, 150, 160);
+    const now = new Date();
+    pdf.text('Data: ' + now.toLocaleDateString('pt-BR') + '  ' + now.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}), margin, y + 4);
+    y += 10;
+
+    pdf.setDrawColor(40, 40, 50);
+    pdf.line(margin, y, pageW - margin, y);
+    y += 6;
+
+    CHAKRAS.forEach(c => {
+        const a = answers[c.id];
+        const score = a.reduce((s,v) => s + Math.min(v, 2), 0);
+
+        if (y + 50 > pageH - margin) y = newPage();
+
+        const rgb = hexToRgb(c.color);
+        pdf.setFillColor(rgb.r, rgb.g, rgb.b);
+        pdf.roundedRect(margin, y, usableW, 8, 1, 1, 'F');
+        pdf.setFont('helvetica', 'bold');
+        pdf.setFontSize(10);
+        pdf.setTextColor(255, 255, 255);
+        pdf.text(c.name.toUpperCase() + '  \u2014  ' + c.theme, margin + 3, y + 5.5);
+        pdf.setFontSize(8);
+        pdf.text('Fazer: ' + score + '/20', pageW - margin - 3, y + 5.5, { align: 'right' });
+        y += 12;
+
+        if (y + 8 > pageH - margin) y = newPage();
+        pdf.setFont('helvetica', 'bold');
+        pdf.setFontSize(7.5);
+        pdf.setTextColor(230, 126, 34);
+        pdf.text('AÇÕES CONCRETAS (FAZER)', margin, y + 3);
+        pdf.setFontSize(6.5);
+        pdf.setTextColor(100, 100, 115);
+        pdf.text('RESPOSTA', colAnswer, y + 3);
+        y += 5;
+
+        c.questions.forEach((q, qi) => {
+            if (y + 5 > pageH - margin) y = newPage();
+
+            const val = a[qi];
+            if (qi % 2 === 0) {
+                pdf.setFillColor(15, 15, 22);
+                pdf.rect(margin, y - 1, usableW, 4.2, 'F');
+            }
+
+            pdf.setFont('helvetica', 'normal');
+            pdf.setFontSize(6.5);
+            pdf.setTextColor(200, 200, 210);
+            const lines = pdf.splitTextToSize((qi + 1) + '. ' + q, colAnswer - margin - 4);
+            pdf.text(lines, margin + 1, y + 2.5);
+
+            if (val === 3) {
+                pdf.setTextColor(239, 68, 68);
+                pdf.setFont('helvetica', 'bold');
+            } else {
+                pdf.setTextColor(180, 180, 190);
+                pdf.setFont('helvetica', 'normal');
+            }
+            pdf.text(val + ' \u2014 ' + labelMap[val], colAnswer, y + 2.5);
+
+            y += Math.max(lines.length * 3.2, 4.2);
+        });
+        y += 8;
+    });
+}
+
+async function exportPDF() {
+    const btn = document.querySelector('.btn-export');
+    btn.disabled = true;
+
+    const overlay = document.createElement('div');
+    overlay.className = 'pdf-overlay';
+    overlay.innerHTML = '<div class="spinner"></div><p>Gerando seu PDF...</p>';
+    document.body.appendChild(overlay);
+
+    try {
+        if (typeof html2canvas === 'undefined' || !window.jspdf) {
+            throw new Error('Bibliotecas de PDF não carregaram. Verifique sua conexão com a internet.');
+        }
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
+        const pageW = pdf.internal.pageSize.getWidth();
+        const pageH = pdf.internal.pageSize.getHeight();
+        const margin = 10;
+        const usableW = pageW - margin * 2;
+
+        const sections = [
+            document.getElementById('levelHud'),
+            document.querySelector('.results-overview'),
+            ...document.querySelectorAll('.chart-card'),
+            document.getElementById('priorityReport'),
+            document.getElementById('resultsDetails')
+        ].filter(el => el && el.innerHTML.trim() !== '');
+
+        let currentY = margin;
+        let isFirstPage = true;
+
+        for (const section of sections) {
+            const canvas = await html2canvas(section, {
+                backgroundColor: '#0a0a0f',
+                scale: 2,
+                useCORS: true,
+                logging: false
+            });
+
+            const imgData = canvas.toDataURL('image/png');
+            const ratio = canvas.width / canvas.height;
+            const imgW = usableW;
+            const imgH = imgW / ratio;
+
+            if (imgH > pageH - margin * 2) {
+                let srcY = 0;
+                const sliceHeightMm = pageH - margin * 2;
+                const sliceHeightPx = (sliceHeightMm / imgH) * canvas.height;
+
+                while (srcY < canvas.height) {
+                    if (!isFirstPage || srcY > 0) pdf.addPage();
+                    isFirstPage = false;
+
+                    const remainPx = Math.min(sliceHeightPx, canvas.height - srcY);
+                    const sliceCanvas = document.createElement('canvas');
+                    sliceCanvas.width = canvas.width;
+                    sliceCanvas.height = remainPx;
+                    const sCtx = sliceCanvas.getContext('2d');
+                    sCtx.drawImage(canvas, 0, srcY, canvas.width, remainPx, 0, 0, canvas.width, remainPx);
+
+                    const sliceData = sliceCanvas.toDataURL('image/png');
+                    const sliceH = (remainPx / canvas.height) * imgH;
+                    pdf.addImage(sliceData, 'PNG', margin, margin, imgW, sliceH);
+
+                    srcY += sliceHeightPx;
+                }
+                currentY = margin;
+                continue;
+            }
+
+            if (currentY + imgH > pageH - margin) {
+                pdf.addPage();
+                isFirstPage = false;
+                currentY = margin;
+            }
+
+            if (!isFirstPage && currentY === margin) {
+            } else if (isFirstPage) {
+                isFirstPage = false;
+            }
+
+            pdf.addImage(imgData, 'PNG', margin, currentY, imgW, imgH);
+            currentY += imgH + 4;
+        }
+
+        addAnswersPages(pdf, pageW, pageH, margin);
+
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('pt-BR').replace(/\//g, '-');
+        pdf.save(`Diagnostico-Acoes-Fazer_${dateStr}.pdf`);
+
+    } catch (err) {
+        console.error('Erro ao gerar PDF:', err);
+        alert('Erro ao gerar o PDF. Tente novamente.');
+    } finally {
+        overlay.remove();
+        btn.disabled = false;
+    }
+}
+</script>
+</body>
+</html>
