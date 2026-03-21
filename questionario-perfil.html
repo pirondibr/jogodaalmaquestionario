@@ -322,7 +322,7 @@ body {
     gap:0.8rem; margin-bottom:3rem;
 }
 
-/* Profile mini cards */
+/* Profile mini cards (V1 — combined bar) */
 .profile-mini {
     background:var(--bg-card); border:1px solid var(--border-subtle);
     border-radius:12px; padding:1rem; position:relative; overflow:hidden;
@@ -336,13 +336,84 @@ body {
     height:8px; background:rgba(255,255,255,0.06); border-radius:4px;
     overflow:hidden; display:flex; margin-bottom:0.3rem;
 }
-.profile-bar-v1 { height:100%; background:linear-gradient(90deg, #ef4444, #f87171); }
-.profile-bar-v2 { height:100%; background:linear-gradient(90deg, #3b82f6, #60a5fa); }
+.profile-bar-v1 { height:100%; background:linear-gradient(90deg, #ef4444, #f87171); border-radius:4px; }
+.profile-bar-v2 { height:100%; background:linear-gradient(90deg, #3b82f6, #60a5fa); border-radius:4px; }
 .profile-pcts {
     display:flex; justify-content:space-between; font-size:0.7rem;
 }
 .profile-pcts .pct-v1 { color:#f87171; font-weight:600; }
 .profile-pcts .pct-v2 { color:#60a5fa; font-weight:600; }
+
+/* Profile score cards (V2 — separate bars with scores) */
+.profile-v2-grid {
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:1rem; margin-bottom:3rem;
+}
+.score-card {
+    background:var(--bg-card); border:1px solid var(--border-subtle);
+    border-radius:16px; padding:1.5rem; position:relative; overflow:hidden;
+}
+.score-card::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:4px;
+    background:var(--chakra-color);
+}
+.score-card-header {
+    display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:1.2rem;
+}
+.score-card-name {
+    font-family:var(--font-heading); font-size:1.4rem; font-weight:700;
+}
+.score-card-central {
+    text-align:right;
+}
+.score-card-central .label {
+    font-size:0.6rem; font-weight:600; text-transform:uppercase;
+    letter-spacing:0.1em; color:var(--text-muted); margin-bottom:0.15rem;
+}
+.score-card-central .value {
+    font-family:var(--font-heading); font-size:1.6rem; font-weight:700;
+    line-height:1;
+}
+.score-card-bars {
+    display:flex; flex-direction:column; gap:0.6rem; margin-bottom:1rem;
+}
+.score-bar-row {
+    display:flex; align-items:center; gap:0.6rem;
+}
+.score-bar-label {
+    font-size:0.7rem; font-weight:700; width:28px; flex-shrink:0; text-align:center;
+    padding:0.1rem 0; border-radius:4px;
+}
+.score-bar-label.v1 { background:rgba(239,68,68,0.12); color:#ef4444; }
+.score-bar-label.v2 { background:rgba(59,130,246,0.12); color:#60a5fa; }
+.score-bar-track {
+    flex:1; height:10px; background:rgba(255,255,255,0.06); border-radius:5px;
+    overflow:hidden;
+}
+.score-bar-fill { height:100%; border-radius:5px; transition:width 0.6s ease; }
+.score-bar-fill.v1 { background:linear-gradient(90deg, #ef4444, #f87171); }
+.score-bar-fill.v2 { background:linear-gradient(90deg, #3b82f6, #60a5fa); }
+.score-bar-pct {
+    font-size:0.75rem; font-weight:700; width:38px; text-align:right; flex-shrink:0;
+}
+.score-bar-pct.v1 { color:#f87171; }
+.score-bar-pct.v2 { color:#60a5fa; }
+.score-dims {
+    display:grid; grid-template-columns:repeat(3,1fr); gap:0.5rem;
+    padding-top:0.8rem; border-top:1px solid var(--border-subtle);
+}
+.score-dim {
+    text-align:center; padding:0.5rem 0.3rem;
+    background:rgba(255,255,255,0.015); border-radius:8px;
+}
+.score-dim-label {
+    font-size:0.6rem; font-weight:600; text-transform:uppercase;
+    letter-spacing:0.08em; color:var(--text-muted); margin-bottom:0.3rem;
+}
+.score-dim-values { display:flex; justify-content:center; gap:0.6rem; }
+.score-dim-v { font-weight:700; font-size:0.8rem; }
+.score-dim-v.v1 { color:#f87171; }
+.score-dim-v.v2 { color:#60a5fa; }
 
 /* Profile detail cards */
 .profile-detail {
@@ -386,20 +457,51 @@ body {
 .profile-cat-item .v-score { font-weight:700; font-size:0.9rem; }
 .profile-cat-item .v-score.v1 { color:#f87171; }
 .profile-cat-item .v-score.v2 { color:#60a5fa; }
-.profile-cat-bar {
-    height:6px; border-radius:3px; overflow:hidden; display:flex;
-    background:rgba(255,255,255,0.04);
+.detail-bars {
+    display:flex; flex-direction:column; gap:0.35rem;
 }
+.detail-bar-row {
+    display:flex; align-items:center; gap:0.5rem;
+}
+.detail-bar-tag {
+    font-size:0.6rem; font-weight:700; width:24px; text-align:center;
+    padding:0.08rem 0; border-radius:3px; flex-shrink:0;
+}
+.detail-bar-tag.v1 { background:rgba(239,68,68,0.12); color:#ef4444; }
+.detail-bar-tag.v2 { background:rgba(59,130,246,0.12); color:#60a5fa; }
+.detail-bar-track {
+    flex:1; height:7px; background:rgba(255,255,255,0.05); border-radius:4px;
+    overflow:hidden;
+}
+.detail-bar-fill { height:100%; border-radius:4px; }
+.detail-bar-fill.v1 { background:linear-gradient(90deg, #ef4444, #f87171); }
+.detail-bar-fill.v2 { background:linear-gradient(90deg, #3b82f6, #60a5fa); }
+.detail-bar-pct {
+    font-size:0.7rem; font-weight:600; width:32px; text-align:right; flex-shrink:0;
+}
+.detail-bar-pct.v1 { color:#f87171; }
+.detail-bar-pct.v2 { color:#60a5fa; }
 .profile-total-row {
     margin-top:1rem; padding-top:1rem;
     border-top:2px solid var(--border-subtle);
-    display:flex; justify-content:space-between; align-items:center;
 }
-.profile-total-label { font-weight:600; color:var(--text-primary); }
-.profile-total-scores { display:flex; gap:1.5rem; }
-.profile-total-v { font-weight:700; font-size:1.1rem; }
-.profile-total-v.v1 { color:#ef4444; }
-.profile-total-v.v2 { color:#60a5fa; }
+.profile-total-bars { display:flex; flex-direction:column; gap:0.4rem; margin-top:0.6rem; }
+.profile-total-bar-row { display:flex; align-items:center; gap:0.5rem; }
+.profile-total-tag {
+    font-size:0.7rem; font-weight:700; width:32px; text-align:center;
+    padding:0.1rem 0; border-radius:4px; flex-shrink:0;
+}
+.profile-total-tag.v1 { background:rgba(239,68,68,0.15); color:#ef4444; }
+.profile-total-tag.v2 { background:rgba(59,130,246,0.15); color:#60a5fa; }
+.profile-total-track {
+    flex:1; height:10px; background:rgba(255,255,255,0.06); border-radius:5px; overflow:hidden;
+}
+.profile-total-fill { height:100%; border-radius:5px; }
+.profile-total-fill.v1 { background:linear-gradient(90deg, #ef4444, #f87171); }
+.profile-total-fill.v2 { background:linear-gradient(90deg, #3b82f6, #60a5fa); }
+.profile-total-pct { font-size:0.8rem; font-weight:700; width:65px; text-align:right; flex-shrink:0; }
+.profile-total-pct.v1 { color:#f87171; }
+.profile-total-pct.v2 { color:#60a5fa; }
 
 /* ===== CHARTS ===== */
 .charts-section { margin-bottom:3rem; }
@@ -609,6 +711,7 @@ body {
     .insight-grid { grid-template-columns:1fr; }
     .overview-grid { grid-template-columns:1fr; }
     .results-overview { grid-template-columns:repeat(auto-fit,minmax(90px,1fr)); }
+    .profile-v2-grid { grid-template-columns:1fr; }
     .quiz-progress { top:3.2rem; }
     .chart-card { padding:1rem; }
 }
@@ -761,6 +864,7 @@ body {
             <p>Veja o quanto você se identifica com cada versão em cada chakra.</p>
         </div>
 
+        <div id="profileOverviewV2"></div>
         <div id="profileOverview"></div>
 
         <div class="charts-section">
@@ -1179,14 +1283,73 @@ function getScoresArray() {
     });
 }
 
+function pct(val, max) { return max > 0 ? Math.round((val / max) * 100) : 0; }
+
 function renderResults() {
+    const overviewV2 = document.getElementById('profileOverviewV2');
     const overview = document.getElementById('profileOverview');
     const details = document.getElementById('profileDetails');
+    overviewV2.innerHTML = '';
     overview.innerHTML = '';
     details.innerHTML = '';
 
     const scores = getScoresArray();
 
+    // === V2 Overview: separate bars + score central + dimension breakdown ===
+    let v2Html = '<div class="profile-v2-grid">';
+    scores.forEach(s => {
+        const v1P = pct(s.totalV1, 6);
+        const v2P = pct(s.totalV2, 6);
+        v2Html += `
+            <div class="score-card" style="--chakra-color:${s.color}">
+                <div class="score-card-header">
+                    <div class="score-card-name">${s.name}</div>
+                    <div class="score-card-central">
+                        <div class="label">Score Central</div>
+                        <div class="value"><span style="color:#f87171">${s.totalV1}</span><span style="color:var(--text-muted);font-size:0.9rem"> / </span><span style="color:#60a5fa">${s.totalV2}</span></div>
+                    </div>
+                </div>
+                <div class="score-card-bars">
+                    <div class="score-bar-row">
+                        <span class="score-bar-label v1">1.0</span>
+                        <div class="score-bar-track"><div class="score-bar-fill v1" style="width:${v1P}%"></div></div>
+                        <span class="score-bar-pct v1">${v1P}%</span>
+                    </div>
+                    <div class="score-bar-row">
+                        <span class="score-bar-label v2">2.0</span>
+                        <div class="score-bar-track"><div class="score-bar-fill v2" style="width:${v2P}%"></div></div>
+                        <span class="score-bar-pct v2">${v2P}%</span>
+                    </div>
+                </div>
+                <div class="score-dims">
+                    <div class="score-dim">
+                        <div class="score-dim-label">Ser</div>
+                        <div class="score-dim-values">
+                            <span class="score-dim-v v1">${s.interno.v1}</span>
+                            <span class="score-dim-v v2">${s.interno.v2}</span>
+                        </div>
+                    </div>
+                    <div class="score-dim">
+                        <div class="score-dim-label">Fazer</div>
+                        <div class="score-dim-values">
+                            <span class="score-dim-v v1">${s.acoes.v1}</span>
+                            <span class="score-dim-v v2">${s.acoes.v2}</span>
+                        </div>
+                    </div>
+                    <div class="score-dim">
+                        <div class="score-dim-label">Ter</div>
+                        <div class="score-dim-values">
+                            <span class="score-dim-v v1">${s.resultados.v1}</span>
+                            <span class="score-dim-v v2">${s.resultados.v2}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+    });
+    v2Html += '</div>';
+    overviewV2.innerHTML = v2Html;
+
+    // === V1 Overview: combined bar (kept) ===
     let overviewHtml = '<div class="results-overview">';
     scores.forEach(s => {
         const total = s.totalV1 + s.totalV2;
@@ -1208,6 +1371,7 @@ function renderResults() {
     overviewHtml += '</div>';
     overview.innerHTML = overviewHtml;
 
+    // === Detail cards: separate independent bars ===
     const CATS = [
         { key:'interno', label:'Interno (Ser)', icon:'🧠' },
         { key:'acoes', label:'Ações (Fazer)', icon:'⚡' },
@@ -1222,9 +1386,8 @@ function renderResults() {
         CATS.forEach(cat => {
             const v1 = s[cat.key].v1;
             const v2 = s[cat.key].v2;
-            const catTotal = v1 + v2;
-            const v1W = catTotal > 0 ? Math.round((v1 / catTotal) * 100) : 50;
-            const v2W = 100 - v1W;
+            const v1P = pct(v1, 2);
+            const v2P = pct(v2, 2);
 
             detailsHtml += `
                 <div class="profile-cat-row">
@@ -1233,27 +1396,45 @@ function renderResults() {
                         <div class="profile-cat-item">
                             <span class="v-label v1">1.0</span>
                             <span class="v-text">${c.items[cat.key].v1}</span>
-                            <span class="v-score v1">${v1}</span>
+                            <span class="v-score v1">${v1}/2</span>
                         </div>
                         <div class="profile-cat-item">
                             <span class="v-label v2">2.0</span>
                             <span class="v-text">${c.items[cat.key].v2}</span>
-                            <span class="v-score v2">${v2}</span>
+                            <span class="v-score v2">${v2}/2</span>
                         </div>
                     </div>
-                    <div class="profile-cat-bar">
-                        <div class="profile-bar-v1" style="width:${v1W}%"></div>
-                        <div class="profile-bar-v2" style="width:${v2W}%"></div>
+                    <div class="detail-bars">
+                        <div class="detail-bar-row">
+                            <span class="detail-bar-tag v1">1.0</span>
+                            <div class="detail-bar-track"><div class="detail-bar-fill v1" style="width:${v1P}%"></div></div>
+                            <span class="detail-bar-pct v1">${v1P}%</span>
+                        </div>
+                        <div class="detail-bar-row">
+                            <span class="detail-bar-tag v2">2.0</span>
+                            <div class="detail-bar-track"><div class="detail-bar-fill v2" style="width:${v2P}%"></div></div>
+                            <span class="detail-bar-pct v2">${v2P}%</span>
+                        </div>
                     </div>
                 </div>`;
         });
 
+        const v1TotalP = pct(s.totalV1, 6);
+        const v2TotalP = pct(s.totalV2, 6);
         detailsHtml += `
             <div class="profile-total-row">
-                <span class="profile-total-label">Total</span>
-                <div class="profile-total-scores">
-                    <span class="profile-total-v v1">1.0: ${s.totalV1}/6</span>
-                    <span class="profile-total-v v2">2.0: ${s.totalV2}/6</span>
+                <span style="font-weight:600;color:var(--text-primary);margin-bottom:0.4rem;display:block">Total</span>
+                <div class="profile-total-bars">
+                    <div class="profile-total-bar-row">
+                        <span class="profile-total-tag v1">1.0</span>
+                        <div class="profile-total-track"><div class="profile-total-fill v1" style="width:${v1TotalP}%"></div></div>
+                        <span class="profile-total-pct v1">${v1TotalP}% (${s.totalV1}/6)</span>
+                    </div>
+                    <div class="profile-total-bar-row">
+                        <span class="profile-total-tag v2">2.0</span>
+                        <div class="profile-total-track"><div class="profile-total-fill v2" style="width:${v2TotalP}%"></div></div>
+                        <span class="profile-total-pct v2">${v2TotalP}% (${s.totalV2}/6)</span>
+                    </div>
                 </div>
             </div>
         </div>`;
@@ -1685,6 +1866,7 @@ async function exportPDF() {
         const usableW = pageW - margin * 2;
 
         const sections = [
+            document.getElementById('profileOverviewV2'),
             document.getElementById('profileOverview'),
             ...document.querySelectorAll('.chart-card'),
             document.getElementById('profileDetails'),
